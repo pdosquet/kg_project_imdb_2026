@@ -1,0 +1,30 @@
+prefixes:
+  cw: http://localhost:3030/culturalworks/ontology#
+  rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns#
+
+mappings:
+
+  # -------------------------------------------------------
+  # GenreLookup: maps each genre_id to its cw: individual.
+  # genre_lookup.csv encodes one M2 decision: genre_id=2
+  # (Short) maps to cw:ShortGenre, not cw:Short, to avoid
+  # a naming collision with the film:Short work type individual.
+  # The order column (genre_priority) is dropped per M2.
+  # -------------------------------------------------------
+
+  GenreLookup:
+    sources: [['data/genre_lookup.csv~csv']]
+    s: $(genre_iri)
+
+  TitleGenreMapping:
+    sources: [['data/title_genre.csv~csv']]
+    s: http://localhost:3030/culturalworks/title/$(title_id)
+    po:
+      - p: cw:hasGenre
+        o:
+          - mapping: GenreLookup
+            condition:
+              function: equal
+              parameters:
+                - [str1, $(genre_id)]
+                - [str2, $(genre_id)]

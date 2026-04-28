@@ -1,0 +1,57 @@
+prefixes:
+  cw: http://localhost:3030/culturalworks/ontology#
+  film: http://localhost:3030/culturalworks/film#
+  xsd: http://www.w3.org/2001/XMLSchema#
+  rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns#
+
+mappings:
+
+  # -------------------------------------------------------
+  # SeasonMapping: synthesises cw:WorkVolume individuals
+  # from distinct (parent_title_id, season_number) pairs.
+  # These entities do not exist in the source data — they
+  # are created by preprocess_complex.py.
+  #
+  # IRI: .../season/{parent_title_id}/S{season_number}
+  # The composite key is necessary because seasons have no
+  # natural identifier in the source data. The parent title
+  # ID scopes the season number within its series.
+  #
+  # cw:partOfSeries links the synthesised volume to its
+  # parent series individual (already in the graph from
+  # the title mapping).
+  # -------------------------------------------------------
+
+  SeasonMapping:
+    sources: [['data/generated/seasons.csv~csv']]
+    s: $(season_iri)
+    po:
+      - [a, cw:WorkVolume~iri]
+      - p: film:seasonNumber
+        o: $(season_number)
+        datatype: xsd:integer
+      - p: cw:partOfSeries
+        o: $(series_iri)~iri
+
+  # -------------------------------------------------------
+  # EpisodeVolumeMapping: asserts cw:partOfVolume from each
+  # episode to its synthesised season individual, and adds
+  # film:episodeNumber.
+  #
+  # Source: episode_volume_links.csv (pre-computed).
+  # Only episodes with a non-null season_number have a row
+  # here — the 15 episodes with null season_number are
+  # absent and therefore get no partOfVolume assertion.
+  # This is correct: the maxCardinality 1 axiom on
+  # cw:partOfVolume allows episodes without a known volume.
+  # -------------------------------------------------------
+
+  EpisodeVolumeMapping:
+    sources: [['data/generated/episode_volume_links.csv~csv']]
+    s: http://localhost:3030/culturalworks/title/$(title_id)
+    po:
+      - p: cw:partOfVolume
+        o: $(season_iri)~iri
+      - p: film:episodeNumber
+        o: $(episode_number)
+        datatype: xsd:integer

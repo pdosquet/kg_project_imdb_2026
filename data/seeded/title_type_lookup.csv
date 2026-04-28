@@ -1,0 +1,8 @@
+title_type_id,title_type_iri
+1,http://localhost:3030/culturalworks/imdb#ImdbDisplay
+3,http://localhost:3030/culturalworks/ontology#AlternativeTitleType
+4,http://localhost:3030/culturalworks/film#Dvd
+5,http://localhost:3030/culturalworks/ontology#FestivalTitle
+6,http://localhost:3030/culturalworks/ontology#WorkingTitle
+7,http://localhost:3030/culturalworks/film#Tv
+8,http://localhost:3030/culturalworks/film#VideoTitle

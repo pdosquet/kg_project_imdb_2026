@@ -1,0 +1,21 @@
+prefixes:
+  cw: http://localhost:3030/culturalworks/ontology#
+  rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns#
+
+mappings:
+
+  # -------------------------------------------------------
+  # Simplest mapping in the project: each row in
+  # talent_title.csv produces a single binary triple.
+  # No reification, no role, no billing order.
+  # This is the broader person-work association from M1,
+  # distinct from title_principal (which maps to
+  # film:FilmContribution with full credit details).
+  # -------------------------------------------------------
+
+  TalentTitleMapping:
+    sources: [['data/talent_title.csv~csv']]
+    s: http://localhost:3030/culturalworks/person/$(talent_id)
+    po:
+      - p: cw:associatedWith
+        o: http://localhost:3030/culturalworks/title/$(title_id)~iri

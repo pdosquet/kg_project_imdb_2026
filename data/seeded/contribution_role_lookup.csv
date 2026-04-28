@@ -1,0 +1,34 @@
+category_id,job,role_iri
+1,,http://localhost:3030/culturalworks/film#Self
+2,,http://localhost:3030/culturalworks/ontology#Director
+2,co-director,http://localhost:3030/culturalworks/film#CoDirector
+3,,http://localhost:3030/culturalworks/film#Cinematographer
+3,director of photography,http://localhost:3030/culturalworks/film#Cinematographer
+3,head director of photography,http://localhost:3030/culturalworks/film#Cinematographer
+4,,http://localhost:3030/culturalworks/ontology#Composer
+5,producer,http://localhost:3030/culturalworks/ontology#Producer
+6,,http://localhost:3030/culturalworks/ontology#Editor
+7,,http://localhost:3030/culturalworks/ontology#Actor
+8,,http://localhost:3030/culturalworks/ontology#Actor
+9,,http://localhost:3030/culturalworks/imdb#Writer
+9,writer,http://localhost:3030/culturalworks/imdb#Writer
+9,written by,http://localhost:3030/culturalworks/imdb#Writer
+9,screenplay by,http://localhost:3030/culturalworks/imdb#Writer
+9,screenplay,http://localhost:3030/culturalworks/imdb#Writer
+9,co-writer,http://localhost:3030/culturalworks/imdb#Writer
+9,scenario,http://localhost:3030/culturalworks/imdb#Writer
+9,dialogue,http://localhost:3030/culturalworks/imdb#Writer
+9,commentary,http://localhost:3030/culturalworks/imdb#Writer
+9,series devised by,http://localhost:3030/culturalworks/film#SeriesCreator
+9,creator,http://localhost:3030/culturalworks/film#SeriesCreator
+9,story editor,http://localhost:3030/culturalworks/film#StoryEditor
+9,Executive Story Editor,http://localhost:3030/culturalworks/film#StoryEditor
+9,head writer,http://localhost:3030/culturalworks/film#HeadWriter
+9,teleplay,http://localhost:3030/culturalworks/film#Teleplay
+9,novel,http://localhost:3030/culturalworks/ontology#NovelAuthor
+9,based on the novel by,http://localhost:3030/culturalworks/ontology#NovelAuthor
+9,libretto,http://localhost:3030/culturalworks/ontology#LibrettoAuthor
+9,story,http://localhost:3030/culturalworks/ontology#StoryAuthor
+9,idea,http://localhost:3030/culturalworks/ontology#IdeaAuthor
+10,,http://localhost:3030/culturalworks/film#ProductionDesigner
+11,,http://localhost:3030/culturalworks/film#ArchiveFootage

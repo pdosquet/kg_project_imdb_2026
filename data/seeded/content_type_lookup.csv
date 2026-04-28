@@ -1,0 +1,10 @@
+content_type_id,work_type_iri
+1,http://localhost:3030/culturalworks/film#ShortFilm
+2,http://localhost:3030/culturalworks/film#Movie
+3,http://localhost:3030/culturalworks/film#TvMovie
+4,http://localhost:3030/culturalworks/film#TvSeries
+5,http://localhost:3030/culturalworks/film#TvEpisode
+6,http://localhost:3030/culturalworks/film#TvShort
+7,http://localhost:3030/culturalworks/film#TvMiniSeries
+8,http://localhost:3030/culturalworks/film#TvSpecial
+9,http://localhost:3030/culturalworks/film#Video

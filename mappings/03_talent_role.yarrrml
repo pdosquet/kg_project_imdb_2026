@@ -1,0 +1,33 @@
+prefixes:
+  cw: http://localhost:3030/culturalworks/ontology#
+  film: http://localhost:3030/culturalworks/film#
+  imdb: http://localhost:3030/culturalworks/imdb#
+  rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns#
+
+mappings:
+
+  # -------------------------------------------------------
+  # RoleLookup: maps each role_id to its ontology individual.
+  # role_lookup.csv encodes all M2 decisions:
+  #   - actress (4) → cw:Actor  (gender is not a role)
+  #   - writer  (6) → imdb:Writer  (IMDB-specific fallback)
+  #   - cinematographer (14) → film:Cinematographer (film-only concept)
+  # The order column (profession_priority) is dropped per M2.
+  # -------------------------------------------------------
+
+  RoleLookup:
+    sources: [['data/seeded/role_lookup.csv~csv']]
+    s: $(role_iri)
+
+  TalentRoleMapping:
+    sources: [['data/talent_role.csv~csv']]
+    s: http://localhost:3030/culturalworks/person/$(talent_id)
+    po:
+      - p: cw:hasProfession
+        o:
+          - mapping: RoleLookup
+            condition:
+              function: equal
+              parameters:
+                - [str1, $(role_id)]
+                - [str2, $(role_id)]

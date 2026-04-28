@@ -1,0 +1,95 @@
+prefixes:
+  cw: http://localhost:3030/culturalworks/ontology#
+  film: http://localhost:3030/culturalworks/film#
+  imdb: http://localhost:3030/culturalworks/imdb#
+  xsd: http://www.w3.org/2001/XMLSchema#
+  rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns#
+
+mappings:
+
+  # -------------------------------------------------------
+  # ClassLookup: derives the OWL class from structural
+  # position in title_episode, not from content_type_id.
+  #   - parent_title_id in title_episode → cw:WorkSeries
+  #   - title_id in title_episode        → cw:WorkUnit
+  #   - all others                       → cw:CreativeWork
+  #   - videoGame (content_type_id=10)   → no row, excluded
+  #
+  # This correctly handles two titles (tt0389705, tt8070516)
+  # that IMDB labels as TV Series / TV MiniSeries but have
+  # no episodes in the dataset — they are mapped as plain
+  # cw:CreativeWork rather than cw:WorkSeries, since there
+  # is no structural evidence of a hierarchy beneath them.
+  # -------------------------------------------------------
+
+  ClassLookup:
+    sources: [['data/generated/title_structure_lookup.csv~csv']]
+    s: $(class_iri)
+
+  # -------------------------------------------------------
+  # WorkTypeLookup: maps content_type_id to the film:WorkType
+  # individual (film:Movie, film:TvSeries, film:TvEpisode…).
+  # This is an IMDB-specific format label, distinct from the
+  # structural class above. videoGame (10) excluded.
+  # -------------------------------------------------------
+
+  WorkTypeLookup:
+    sources: [['data/seeded/content_type_lookup.csv~csv']]
+    s: $(work_type_iri)
+
+  # -------------------------------------------------------
+  # TitleMapping: unified mapping for all titles.
+  #
+  # rdf:type is resolved via ClassLookup joined on title_id
+  # — structurally correct class, independent of content_type.
+  #
+  # cw:hasType is resolved via WorkTypeLookup joined on
+  # content_type_id — preserves the IMDB format vocabulary
+  # as a facet for the dynamic interface (M1 requirement).
+  #
+  # cw:endYear is emitted for all titles where end_year is
+  # non-null. RMLMapper skips empty fields automatically.
+  # The domain axiom on cw:endYear (domain cw:WorkSeries)
+  # provides a second inference route to the correct class.
+  # -------------------------------------------------------
+
+  TitleMapping:
+    sources: [['data/title.csv~csv']]
+    s: http://localhost:3030/culturalworks/title/$(title_id)
+    po:
+      - p: rdf:type
+        o:
+          - mapping: ClassLookup
+            condition:
+              function: equal
+              parameters:
+                - [str1, $(title_id)]
+                - [str2, $(title_id)]
+
+      - [cw:primaryTitle, $(primary_title)]
+      - [cw:originalTitle, $(original_title)]
+
+      - p: cw:startYear
+        o: $(start_year)
+        datatype: xsd:gYear
+
+      - p: cw:endYear
+        o: $(end_year)
+        datatype: xsd:gYear
+
+      - p: film:runtimeMinutes
+        o: $(runtime_minutes)
+        datatype: xsd:integer
+
+      - p: imdb:isAdult
+        o: $(is_adult)
+        datatype: xsd:boolean
+
+      - p: cw:hasType
+        o:
+          - mapping: WorkTypeLookup
+            condition:
+              function: equal
+              parameters:
+                - [str1, $(content_type_id)]
+                - [str2, $(content_type_id)]

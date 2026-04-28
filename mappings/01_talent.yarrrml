@@ -1,0 +1,29 @@
+prefixes:
+  cw: http://localhost:3030/culturalworks/ontology#
+  xsd: http://www.w3.org/2001/XMLSchema#
+  rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns#
+  rdfs: http://www.w3.org/2000/01/rdf-schema#
+
+mappings:
+  TalentMapping:
+    sources:
+      - ['talent.csv~csv']
+    s: http://localhost:3030/culturalworks/person/$(talent_id)
+    po:
+      # Type assertion
+      - [rdf:type, cw:RealPerson]
+      
+      # Name (always present, mandatory in data)
+      - [cw:name, $(talent_name)]
+      
+      # Birth year (optional: skip if null, type as xsd:gYear)
+      - p: cw:birthYear
+        o: $(birth_year)
+        condition: isNotNull($(birth_year))
+        datatype: xsd:gYear
+      
+      # Death year (optional: skip if null, type as xsd:gYear)
+      - p: cw:deathYear
+        o: $(death_year)
+        condition: isNotNull($(death_year))
+        datatype: xsd:gYear
