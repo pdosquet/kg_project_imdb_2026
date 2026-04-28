@@ -4,3 +4,4 @@ data/generated/*.csv
 *.gz
 *.zip
 jena
+apache*

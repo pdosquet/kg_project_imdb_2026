@@ -24,8 +24,9 @@ OL_SEARCH = "https://openlibrary.org/search.json"
 SLEEP = 0.5
 
 
-def fetch_works(ol_key_short, ol_name, max_works):
-    """Hit OL search API for works by this author key."""
+def fetch_works(ol_key_short, ol_name, max_works, retries=4):
+    """Hit OL search API for works by this author key.
+    Retries up to `retries` times with exponential backoff on any error."""
     q = urllib.parse.urlencode({
         "author":  ol_key_short,
         "fields":  "key,title,first_publish_year,subject,language",
@@ -34,25 +35,33 @@ def fetch_works(ol_key_short, ol_name, max_works):
     })
     url = f"{OL_SEARCH}?{q}"
     req = urllib.request.Request(url, headers={"User-Agent": "kr-project-m4/1.0"})
-    try:
-        with urllib.request.urlopen(req, timeout=30) as r:
-            data = json.loads(r.read().decode("utf-8"))
-        time.sleep(SLEEP)
-        results = []
-        for doc in data.get("docs", []):
-            results.append({
-                "ol_key":             f"/authors/{ol_key_short}",
-                "ol_name":            ol_name,
-                "ol_work_key":        doc.get("key", "").replace("/works/", ""),
-                "title":              doc.get("title", ""),
-                "first_publish_year": doc.get("first_publish_year", ""),
-                "subjects":           "; ".join((doc.get("subject") or [])[:5]),
-                "languages":          "; ".join((doc.get("language") or [])[:3]),
-            })
-        return results
-    except Exception as e:
-        print(f"  ! Error fetching {ol_key_short}: {e}")
-        return []
+
+    for attempt in range(1, retries + 1):
+        try:
+            with urllib.request.urlopen(req, timeout=60) as r:
+                data = json.loads(r.read().decode("utf-8"))
+            time.sleep(SLEEP)
+            results = []
+            for doc in data.get("docs", []):
+                results.append({
+                    "ol_key":             f"/authors/{ol_key_short}",
+                    "ol_name":            ol_name,
+                    "ol_work_key":        doc.get("key", "").replace("/works/", ""),
+                    "title":              doc.get("title", ""),
+                    "first_publish_year": doc.get("first_publish_year", ""),
+                    "subjects":           "; ".join((doc.get("subject") or [])[:5]),
+                    "languages":          "; ".join((doc.get("language") or [])[:3]),
+                })
+            return results
+        except Exception as e:
+            wait = 2 ** attempt   # 2, 4, 8, 16 seconds
+            print(f"  ! Attempt {attempt}/{retries} failed for {ol_key_short}: {e}")
+            if attempt < retries:
+                print(f"    Retrying in {wait}s...")
+                time.sleep(wait)
+            else:
+                print(f"  ! All {retries} attempts failed. Skipping {ol_key_short}.")
+                return []
 
 
 def main():

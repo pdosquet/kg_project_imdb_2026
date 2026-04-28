@@ -1,0 +1,182 @@
+@prefix book:  <http://localhost:3030/culturalworks/book#> .
+@prefix cw:    <http://localhost:3030/culturalworks/ontology#> .
+@prefix owl:   <http://www.w3.org/2002/07/owl#> .
+@prefix rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:   <http://www.w3.org/2001/XMLSchema#> .
+@prefix dc:    <http://purl.org/dc/elements/1.1/> .
+
+# =============================================================================
+# Ontology declaration
+# =============================================================================
+
+<http://localhost:3030/culturalworks/book> rdf:type owl:Ontology ;
+    owl:imports <http://localhost:3030/culturalworks/ontology> ;
+    dc:title "Book and Literary Domain Ontology"@en ;
+    dc:description """The second tier of the three-tier cultural works ontology,
+parallel to film.ttl, for the literary domain. Extends the shared cw: vocabulary
+with classes, properties, and individuals specific to books and written works.
+This vocabulary is independent of any particular data source: it represents
+the shared domain knowledge that any book or literary knowledge graph would
+need, regardless of whether its data comes from Open Library, Project Gutenberg,
+WorldCat, or another source.
+
+This file imports cw: only, not film:. The absence of a film: import is
+deliberate: it demonstrates that the shared cw: vocabulary is genuinely
+domain-agnostic and can be extended by two independent domain ontologies
+(book: and film:) without either depending on the other. Cross-domain
+queries between the IMDB knowledge graph and the Open Library knowledge
+graph are enabled by the shared cw: vocabulary and owl:sameAs links on
+RealPerson individuals — not by any direct dependency between book: and film:.
+
+The owl:sameAs links connecting IMDB RealPerson individuals to Open Library
+author individuals are asserted in the data layer (the RDF knowledge graph)
+rather than in this ontology. The five confirmed links are:
+  Victor Hugo     → OL /authors/OL107571A   → Wikidata Q535
+  Peter Hacks     → OL /authors/OL42596A    → Wikidata Q61194
+  Orson Welles    → OL /authors/OL402527A   → Wikidata Q24829
+  Werner Herzog   → OL /authors/OL1105435A  → Wikidata Q44131
+  William Nicholson → OL /authors/OL682312A → Wikidata Q706935"""@en ;
+    dc:creator "DOSQUET Pierre" , "GHOSEZ Arthur" ,
+               "MANUEL CANOSA BARBEITO Angel" , "NAOUASS Mouad" ;
+    owl:versionInfo "1.0" .
+
+# =============================================================================
+# Classes
+# =============================================================================
+
+# --- BookContribution --------------------------------------------------------
+# Mirrors film:FilmContribution in the film domain. A credited participation
+# in a literary work — authoring, translating, editing, or illustrating.
+# Placed in book: because any literary knowledge graph needs this concept;
+# it is not specific to Open Library as a data source.
+#
+# Inherits from cw:Contribution the three structural axioms:
+#   - exactly one cw:contributedBy (the RealPerson)
+#   - exactly one cw:involves     (the CreativeWork)
+#   - at most one cw:hasRole      (the Role)
+# These axioms apply to all Contributions through rdfs:subClassOf inheritance.
+# =============================================================================
+
+book:BookContribution rdf:type owl:Class ;
+    rdfs:subClassOf cw:Contribution ;
+    rdfs:label "Book Contribution"@en ;
+    rdfs:comment "A credited contribution to a literary work. Extends cw:Contribution for the literary domain, covering authorship, translation, editing, and illustration. Placed in book: because any literary dataset needs this concept regardless of data source. Dataset-specific extensions attach to this class through their own namespaces."@en .
+
+# --- BookRole ----------------------------------------------------------------
+# Mirrors film:FilmRole. A role specific to the literary production context.
+# Universal roles shared with film and theatre (Author, Editor, Translator)
+# are already defined in cw:. BookRole covers roles that are specific to the
+# publishing context: illustration, cover design, foreword writing.
+# =============================================================================
+
+book:BookRole rdf:type owl:Class ;
+    rdfs:subClassOf cw:Role ;
+    rdfs:label "Book Role"@en ;
+    rdfs:comment "A role specific to the literary domain and publishing context. Universal roles that exist across all creative domains (Author, Editor, Translator) are defined in cw:Role; book:BookRole covers roles that are specific to literary production."@en .
+
+# =============================================================================
+# Object Properties
+# =============================================================================
+
+# No new object properties are needed. The cw: vocabulary already provides:
+#   cw:contributedBy  — person who made the contribution
+#   cw:involves       — work the contribution was made to
+#   cw:hasRole        — role in which the person contributed
+#   cw:hasProfession  — career-wide role on RealPerson
+#   cw:hasType        — work type (book:Novel, book:Play, etc.)
+#   cw:hasGenre       — genre (cw:Drama, cw:Mystery, etc.)
+#   cw:workLanguage   — primary language of the work (added to cw: in v1.4)
+#   cw:isAdaptationOf — source work relationship
+#   cw:associatedWith — broad person-work association
+#
+# The absence of new object properties here is evidence that the cw: design
+# was correctly domain-agnostic: literary works, like film works, have a type,
+# a genre, a language, and are produced through contributions by real people.
+
+# =============================================================================
+# Datatype Properties
+# =============================================================================
+
+# cw:startYear is reused for first publication year.
+# The domain of cw:startYear is cw:CreativeWork (no restriction), so it
+# applies to book instances without modification. A novel's first publication
+# year is semantically equivalent to a film's release year for the purposes
+# of faceted search (the application's primary use case).
+#
+# No new datatype properties are added in book: v1.0.
+
+# =============================================================================
+# WorkType Individuals
+# Pre-populated literary format individuals, parallel to the 9 film:WorkType
+# individuals in film.ttl. Any literary dataset can enumerate these via
+# cw:WorkType. A film dataset importing only film: does not inherit these.
+#
+# The six individuals cover the formats present in Open Library for the
+# matched authors (Hugo, Hacks, Welles, Herzog, Nicholson). The vocabulary
+# is intentionally conservative: only formats attested in the actual data
+# are included, following the same principle as the film: tier.
+# =============================================================================
+
+book:Novel rdf:type owl:NamedIndividual , cw:WorkType ;
+    rdfs:label "Novel"@en ;
+    rdfs:comment "A long-form prose literary work of fiction. The primary literary format in the Open Library dataset used for this demonstrator."@en .
+
+book:ShortStory rdf:type owl:NamedIndividual , cw:WorkType ;
+    rdfs:label "Short Story"@en ;
+    rdfs:comment "A short-form prose work of fiction, typically under 10,000 words."@en .
+
+book:Poetry rdf:type owl:NamedIndividual , cw:WorkType ;
+    rdfs:label "Poetry"@en ;
+    rdfs:comment "A literary work in verse form. Victor Hugo was a prolific poet; his poetry collections are present in the Open Library dataset."@en .
+
+book:Play rdf:type owl:NamedIndividual , cw:WorkType ;
+    rdfs:label "Play"@en ;
+    rdfs:comment "A dramatic work written for theatrical performance. Peter Hacks's works in Open Library are primarily plays."@en .
+
+book:Essay rdf:type owl:NamedIndividual , cw:WorkType ;
+    rdfs:label "Essay"@en ;
+    rdfs:comment "A short prose work presenting an argument or reflection. Orson Welles and Werner Herzog both have essay collections in Open Library."@en .
+
+book:NonFiction rdf:type owl:NamedIndividual , cw:WorkType ;
+    rdfs:label "Non-Fiction"@en ;
+    rdfs:comment "A literary work presenting factual information, analysis, or argument about real events or subjects. Used as a catch-all for Open Library works whose format is not more specifically classifiable."@en .
+
+# Mutual distinctness declaration for all WorkType individuals in book:
+[] rdf:type owl:AllDifferent ;
+    owl:distinctMembers (
+        book:Novel book:ShortStory book:Poetry
+        book:Play book:Essay book:NonFiction
+    ) .
+
+# =============================================================================
+# BookRole Individuals
+# Publishing-specific roles not already covered by cw:.
+# cw: already provides: Author, Editor, Translator, Producer, Composer.
+# Only roles genuinely specific to the literary production context are added.
+# =============================================================================
+
+book:Illustrator rdf:type owl:NamedIndividual , book:BookRole ;
+    rdfs:label "Illustrator"@en ;
+    rdfs:comment "A person who creates illustrations for a literary work. Specific to the publishing context: film and theatre do not have illustrators in the same sense."@en .
+
+book:ForewordAuthor rdf:type owl:NamedIndividual , book:BookRole ;
+    rdfs:label "Foreword Author"@en ;
+    rdfs:comment "A person who writes a foreword or preface to a literary work written by another author. Relevant for the Open Library dataset, where actors and directors (such as Eddie Redmayne) sometimes appear as foreword authors rather than primary authors."@en .
+
+# =============================================================================
+# Design note: why so few additions?
+# =============================================================================
+# The smallness of book: relative to film: is intentional and meaningful.
+# film.ttl adds 3 classes, 2 object properties, 3 datatype properties,
+# and ~50 named individuals because film production has a rich, specific
+# credit vocabulary (cinematographers, gaffers, script supervisors, etc.).
+# Literary production is simpler: author, translator, editor, illustrator.
+# The cw: vocabulary already covers most of what books need because cw: was
+# designed with books in mind as a parallel use case from the beginning
+# (see M2 report §1.3, Scenarios 3 and 4).
+#
+# This asymmetry is evidence of correct ontology design, not an omission.
+# It is documented explicitly in the M4 report as a validation of the
+# three-tier architecture.
+# =============================================================================

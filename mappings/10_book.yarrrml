@@ -1,0 +1,115 @@
+prefixes:
+  cw:    "http://localhost:3030/culturalworks/ontology#"
+  book:  "http://localhost:3030/culturalworks/book#"
+  owl:   "http://www.w3.org/2002/07/owl#"
+  rdf:   "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+  rdfs:  "http://www.w3.org/2000/01/rdf-schema#"
+  xsd:   "http://www.w3.org/2001/XMLSchema#"
+
+mappings:
+
+  OlWork:
+    sources:
+      - [data/generated/ol_work.csv~csv]
+    subjects: "http://localhost:3030/culturalworks/ol/work/$(ol_work_key)"
+    predicateobjects:
+      - predicate: rdf:type
+        object:
+          value: cw:CreativeWork
+          type: iri
+      - predicate: cw:primaryTitle
+        object: $(title)
+      - predicate: cw:startYear
+        object:
+          value: $(first_publish_year)
+          datatype: xsd:gYear
+      - predicate: cw:hasType
+        object:
+          value: $(work_type_iri)
+          type: iri
+
+  OlWorkLanguage:
+    sources:
+      - [data/generated/ol_work_language.csv~csv]
+    subjects: "http://localhost:3030/culturalworks/ol/work/$(ol_work_key)"
+    predicateobjects:
+      - predicate: cw:workLanguage
+        object:
+          value: "http://localhost:3030/culturalworks/language/$(language_code)"
+          type: iri
+
+  OlLanguageType:
+    sources:
+      - [data/generated/ol_work_language.csv~csv]
+    subjects: "http://localhost:3030/culturalworks/language/$(language_code)"
+    predicateobjects:
+      - predicate: rdf:type
+        object:
+          value: cw:Language
+          type: iri
+
+  OlLanguageSameAs:
+    sources:
+      - [data/generated/ol_work_language.csv~csv]
+    subjects: "http://localhost:3030/culturalworks/language/$(language_code)"
+    predicateobjects:
+      - predicate: owl:sameAs
+        object:
+          value: $(lexvo_iri)
+          type: iri
+
+  OlPerson:
+    sources:
+      - [data/generated/ol_person.csv~csv]
+    subjects: "http://localhost:3030/culturalworks/ol/author/$(ol_key_short)"
+    predicateobjects:
+      - predicate: rdf:type
+        object:
+          value: cw:RealPerson
+          type: iri
+      - predicate: cw:name
+        object: $(name)
+      - predicate: cw:birthYear
+        object:
+          value: $(birth_year)
+          datatype: xsd:gYear
+      - predicate: cw:deathYear
+        object:
+          value: $(death_year)
+          datatype: xsd:gYear
+      - predicate: owl:sameAs
+        object:
+          value: $(wikidata_iri)
+          type: iri
+
+  OlContribution:
+    sources:
+      - [data/generated/ol_contribution.csv~csv]
+    subjects: "http://localhost:3030/culturalworks/ol/contribution/$(ol_work_key)/$(ol_key_short)"
+    predicateobjects:
+      - predicate: rdf:type
+        object:
+          value: book:BookContribution
+          type: iri
+      - predicate: cw:contributedBy
+        object:
+          value: "http://localhost:3030/culturalworks/ol/author/$(ol_key_short)"
+          type: iri
+      - predicate: cw:involves
+        object:
+          value: "http://localhost:3030/culturalworks/ol/work/$(ol_work_key)"
+          type: iri
+      - predicate: cw:hasRole
+        object:
+          value: cw:Author
+          type: iri
+
+  OlImdbSameAs:
+    sources:
+      - [data/generated/ol_sameas.csv~csv]
+    subjects: "http://localhost:3030/culturalworks/person/$(imdb_talent_id)"
+    predicateobjects:
+      - predicate: owl:sameAs
+        object:
+          value: "http://localhost:3030/culturalworks/ol/author/$(ol_key_short)"
+          type: iri
