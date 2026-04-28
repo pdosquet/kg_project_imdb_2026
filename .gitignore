@@ -1,3 +1,4 @@
 rmlmapper.jar
 output/*.nt
 data/generated/*.csv
+*.gz

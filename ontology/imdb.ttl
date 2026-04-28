@@ -1,0 +1,130 @@
+@prefix cw:    <http://localhost:3030/culturalworks/ontology#> .
+@prefix film:  <http://localhost:3030/culturalworks/film#> .
+@prefix imdb:  <http://localhost:3030/culturalworks/imdb#> .
+@prefix owl:   <http://www.w3.org/2002/07/owl#> .
+@prefix rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:   <http://www.w3.org/2001/XMLSchema#> .
+@prefix dc:    <http://purl.org/dc/elements/1.1/> .
+
+# =============================================================================
+# Ontology declaration
+# =============================================================================
+
+<http://localhost:3030/culturalworks/imdb> rdf:type owl:Ontology ;
+    owl:imports <http://localhost:3030/culturalworks/ontology> ,
+                <http://localhost:3030/culturalworks/film> ;
+    dc:title "IMDB Extension Ontology"@en ;
+    dc:description """The third tier of a three-tier cultural works ontology.
+Extends cw: and film: with concepts specific to IMDB as a data source.
+Contains only what is genuinely IMDB-specific: IMDB's principal credit
+billing order, the adult-content classification flag, the IMDB display
+title type, the writer fallback individual for IMDB category_id=9
+credits, and IMDB-proprietary region codes (X-codes). The film
+contribution mechanism itself, including character portrayal, lives in
+film.ttl as it is shared across all film and television datasets."""@en ;
+    dc:creator "DOSQUET Pierre" , "GHOSEZ Arthur" ,
+               "MANUEL CANOSA BARBEITO Angel" , "NAOUASS Mouad" ;
+    owl:versionInfo "1.0" .
+
+# =============================================================================
+# Datatype Properties
+# =============================================================================
+
+imdb:isAdult rdf:type owl:DatatypeProperty ;
+    rdfs:domain cw:CreativeWork ;
+    rdfs:range xsd:boolean ;
+    rdfs:label "is adult"@en ;
+    rdfs:comment "Indicates whether the work is classified as adult content by IMDB. IMDB-specific: this flag is part of IMDB's content classification system."@en .
+
+imdb:billingOrder rdf:type owl:DatatypeProperty ;
+    rdfs:domain film:FilmContribution ;
+    rdfs:range xsd:integer ;
+    rdfs:label "billing order"@en ;
+    rdfs:comment "The position of this credit in the IMDB principal credits list (1 to 10), reflecting the prominence of the contribution. IMDB-specific: the concept of a ranked principal credits list of up to 10 people is specific to IMDB's data model. Attached to film:FilmContribution because the contribution itself is a film-domain concept; only the billing-order mechanism is IMDB-specific."@en .
+
+# =============================================================================
+# TitleTypeCategory Individual — IMDB-specific (1)
+# =============================================================================
+
+imdb:ImdbDisplay rdf:type owl:NamedIndividual , cw:TitleTypeCategory ;
+    rdfs:label "IMDB Display Title"@en ;
+    rdfs:comment "The title as displayed on the IMDB website. IMDB-specific: no equivalent concept exists in other cultural domains or other film datasets."@en .
+
+# =============================================================================
+# Writer Individual — IMDB mapping fallback
+# imdb:Writer is the role value for title_principal rows with category_id=9
+# and a null job field. It is a mapping artifact specific to IMDB's data
+# model rather than a universal concept. A film dataset without IMDB's
+# category/job mechanism would not need this individual.
+# =============================================================================
+
+imdb:Writer rdf:type owl:NamedIndividual , film:Screenwriter ;
+    rdfs:label "Writer"@en ;
+    rdfs:comment "A generic writing credit in the IMDB principal credits system. Used when category_id=9 appears with a null job value, providing no more specific writing role. This is an IMDB data model artifact: more specific writing roles are represented by film:Screenwriter individuals when the job field is populated."@en .
+
+# =============================================================================
+# Principal Credit Role AllDifferent
+# Combines cw: universal roles with film: audiovisual-specific roles
+# and imdb:Writer for the complete set of IMDB principal credit individuals.
+# =============================================================================
+
+[] rdf:type owl:AllDifferent ;
+    owl:distinctMembers (
+        cw:Actor cw:Director cw:Producer cw:Composer cw:Editor
+        film:Cinematographer film:CoDirector film:ProductionDesigner
+        film:Self film:ArchiveFootage film:ArchiveSound
+        imdb:Writer
+    ) .
+
+# =============================================================================
+# IMDB-proprietary Region Individuals (10)
+# ISO 3166-1 regions are not pre-populated: minted at M3 using the ISO code
+# as IRI fragment, with optional owl:sameAs to Geonames or DBpedia.
+#
+# X-codes fall into three sub-groups:
+#   1. Geographic groupings (XWW, XEU, XNA, XAS, XAU): no ISO standard.
+#   2. Politically ambiguous entities (XWG, XKO/XKV): no uncontested standard.
+#   3. Former political entities (XYU): ISO 3166-3 YUCS exists; owl:sameAs
+#      may be declared at M3.
+# =============================================================================
+
+imdb:RegionWorldwide rdf:type owl:NamedIndividual , cw:Region ;
+    rdfs:label "Worldwide"@en ;
+    rdfs:comment "IMDB X-code XWW: worldwide distribution, not restricted to any country."@en .
+
+imdb:RegionEurope rdf:type owl:NamedIndividual , cw:Region ;
+    rdfs:label "Europe"@en ;
+    rdfs:comment "IMDB X-code XEU: European distribution as a geographic grouping. Not equivalent to the European Union."@en .
+
+imdb:RegionNorthAmerica rdf:type owl:NamedIndividual , cw:Region ;
+    rdfs:label "North America"@en ;
+    rdfs:comment "IMDB X-code XNA: North American distribution as a geographic grouping."@en .
+
+imdb:RegionAsia rdf:type owl:NamedIndividual , cw:Region ;
+    rdfs:label "Asia"@en ;
+    rdfs:comment "IMDB X-code XAS: Asian distribution as a geographic grouping."@en .
+
+imdb:RegionAustralasia rdf:type owl:NamedIndividual , cw:Region ;
+    rdfs:label "Australasia"@en ;
+    rdfs:comment "IMDB X-code XAU: Australasian distribution as a geographic grouping."@en .
+
+imdb:RegionKosovo rdf:type owl:NamedIndividual , cw:Region ;
+    rdfs:label "Kosovo"@en ;
+    rdfs:comment "IMDB X-codes XKO/XKV: Kosovo. Declared independence in 2008; the widely-used user-assigned ISO code XK exists but is not an official ISO 3166-1 assignment."@en .
+
+imdb:RegionFormerYugoslavia rdf:type owl:NamedIndividual , cw:Region ;
+    rdfs:label "Former Yugoslavia"@en ;
+    rdfs:comment "IMDB X-code XYU: the former Socialist Federal Republic of Yugoslavia. ISO 3166-3 provides historical code YUCS; an owl:sameAs link may be declared at M3."@en .
+
+imdb:RegionFormerWestGermany rdf:type owl:NamedIndividual , cw:Region ;
+    rdfs:label "Former West Germany"@en ;
+    rdfs:comment "IMDB X-code XWG: the former Federal Republic of Germany. No ISO 3166-3 code exists: the DE code was retained for unified Germany."@en .
+
+imdb:RegionSpecialIntl rdf:type owl:NamedIndividual , cw:Region ;
+    rdfs:label "Special International"@en ;
+    rdfs:comment "IMDB X-code XSI: scope not documented in public IMDB data."@en .
+
+imdb:RegionSpecialPI rdf:type owl:NamedIndividual , cw:Region ;
+    rdfs:label "Special PI"@en ;
+    rdfs:comment "IMDB X-code XPI: scope not documented in public IMDB data."@en .

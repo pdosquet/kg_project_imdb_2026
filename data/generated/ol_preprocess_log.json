@@ -1,0 +1,41 @@
+{
+  "run_timestamp": "2026-04-28T20:15:35.745101",
+  "dump_path": "ol_dump_authors_latest.txt.gz",
+  "talent_path": "data/talent.csv",
+  "total_ol_authors": 15107583,
+  "filtered_wikidata": 177569,
+  "birth_parse": {
+    "absent": 13166597,
+    "clean": 1846985,
+    "extracted": 60355,
+    "unparseable": 14552,
+    "floruit": 2626,
+    "uncertain": 15399,
+    "century": 1061,
+    "decade": 8
+  },
+  "death_parse": {
+    "absent": 14535352,
+    "clean": 498685,
+    "unparseable": 36242,
+    "extracted": 27891,
+    "uncertain": 8280,
+    "century": 1112,
+    "floruit": 19,
+    "decade": 2
+  },
+  "name_match_candidates": 2172,
+  "date_match_confirmed": 9,
+  "date_match_inconclusive": 1750,
+  "date_match_rejected": 413,
+  "sameas_asserted": 1759,
+  "works_fetched": 0,
+  "difficulty_notes": [
+    "TSV-with-JSON: line splitting on \\t with limit=4 required; naive CSV would break on embedded commas",
+    "birth_date/death_date are free-text; regex extraction with fallback categories used",
+    "floruit dates (fl. NNNN) silently discarded \u2014 they express active period, not birth",
+    "circa markers kept as uncertain years; included in matching with relaxed tolerance",
+    "6M+ records streamed without full decompression to avoid 3GB temp file",
+    "No OL\u2194IMDB crosswalk exists; name+life-date matching precision is a methodological choice"
+  ]
+}

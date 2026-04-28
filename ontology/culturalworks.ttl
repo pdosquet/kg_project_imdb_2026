@@ -1,0 +1,604 @@
+@prefix cw:    <http://localhost:3030/culturalworks/ontology#> .
+@prefix owl:   <http://www.w3.org/2002/07/owl#> .
+@prefix rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:   <http://www.w3.org/2001/XMLSchema#> .
+@prefix dc:    <http://purl.org/dc/elements/1.1/> .
+
+# =============================================================================
+# Ontology declaration
+# =============================================================================
+
+<http://localhost:3030/culturalworks/ontology> rdf:type owl:Ontology ;
+    dc:title "Cultural Works Ontology"@en ;
+    dc:description """A shared ontology for describing cultural works, their
+contributors, and their titles. Serves two complementary purposes:
+(1) a structural vocabulary of domain-agnostic classes and properties that
+any cultural works system — film, books, music, theatre — can import and
+extend; (2) a pre-populated controlled vocabulary of shared individuals
+(genres, work types, title type categories, source material roles, generic
+professional roles) that allows applications to enumerate facet values
+without knowledge of any specific dataset, and that enables cross-dataset
+alignment via owl:sameAs. Domain-specific ontologies extend this vocabulary
+by importing cw: and adding their own classes, properties, and individuals
+in a separate namespace."""@en ;
+    dc:creator "DOSQUET Pierre" , "GHOSEZ Arthur" ,
+               "MANUEL CANOSA BARBEITO Angel" , "NAOUASS Mouad" ;
+    owl:versionInfo "1.3" .
+
+# =============================================================================
+# Classes
+# =============================================================================
+
+# --- Top-level classes (pairwise disjoint) ---
+
+cw:CreativeWork rdf:type owl:Class ;
+    rdfs:label "Creative Work"@en ;
+    rdfs:comment "A creative work is any standalone intellectual or artistic production intended for an audience, such as a film, a novel, a music album, or a television production."@en .
+
+cw:Contribution rdf:type owl:Class ;
+    rdfs:label "Contribution"@en ;
+    rdfs:comment "A contribution represents the credited participation of a real person in a creative work. It is an associative entity that simultaneously captures who contributed, to what work, and in what role."@en .
+
+cw:RealPerson rdf:type owl:Class ;
+    rdfs:label "Real Person"@en ;
+    rdfs:comment "A real person is a human being who exists or has existed in the real world and who participates in the creation or performance of one or more creative works."@en .
+
+cw:FictionalCharacter rdf:type owl:Class ;
+    rdfs:label "Fictional Character"@en ;
+    rdfs:comment "A fictional character is an imaginary person or entity that appears within a creative work. A character is distinct from the real person who portrays them."@en .
+
+cw:Role rdf:type owl:Class ;
+    rdfs:label "Role"@en ;
+    rdfs:comment "A role describes the function or capacity in which a person participates in the creation, production, or performance of a creative work. The same role vocabulary serves both career-wide professions (via cw:hasProfession) and contribution-specific credits (via cw:hasRole), preserving the three-level professional identity at the property level rather than through separate class hierarchies."@en .
+
+cw:AlternativeTitle rdf:type owl:Class ;
+    rdfs:label "Alternative Title"@en ;
+    rdfs:comment "An alternative title is a title variant of a creative work that differs from its original title. It is modelled as a class rather than a plain string literal because it carries structured context beyond the title text: the geographic region in which it is used, the language in which it is expressed, and the distribution or rendering context that motivated it. A plain string literal can carry at most one dimension of this context via language tagging; it cannot represent the remaining dimensions."@en .
+
+# Top-level disjointness
+[] rdf:type owl:AllDisjointClasses ;
+    owl:members ( cw:CreativeWork cw:Contribution cw:RealPerson
+                  cw:FictionalCharacter cw:Role cw:AlternativeTitle ) .
+
+# --- CreativeWork subclasses (pairwise disjoint) ---
+
+cw:WorkSeries rdf:type owl:Class ;
+    rdfs:subClassOf cw:CreativeWork ;
+    rdfs:label "Work Series"@en ;
+    rdfs:comment "A work series is a creative work that groups a sequence of volumes released over time under a common title."@en .
+
+cw:WorkVolume rdf:type owl:Class ;
+    rdfs:subClassOf cw:CreativeWork ;
+    rdfs:label "Work Volume"@en ;
+    rdfs:comment "A work volume is a structural subdivision of a work series, grouping a set of work units under a common sequential identifier."@en ;
+    rdfs:subClassOf [
+        rdf:type owl:Restriction ;
+        owl:onProperty cw:partOfSeries ;
+        owl:cardinality "1"^^xsd:nonNegativeInteger
+    ] .
+
+cw:WorkUnit rdf:type owl:Class ;
+    rdfs:subClassOf cw:CreativeWork ;
+    rdfs:label "Work Unit"@en ;
+    rdfs:comment "A work unit is the smallest structural subdivision of a creative work — an individual episode or installment."@en ;
+    rdfs:subClassOf [
+        rdf:type owl:Restriction ;
+        owl:onProperty cw:partOfVolume ;
+        owl:maxCardinality "1"^^xsd:nonNegativeInteger
+    ] .
+
+# Work subclass disjointness
+[] rdf:type owl:AllDisjointClasses ;
+    owl:members ( cw:WorkSeries cw:WorkVolume cw:WorkUnit ) .
+
+# --- Contribution cardinality axioms ---
+# These are OWL axioms, not database constraints. Each axiom makes a logical
+# assertion that a reasoner uses to infer completeness or identity. For
+# example, the cardinality-1 axiom on cw:contributedBy asserts that every
+# Contribution is related to exactly one RealPerson; if two contributedBy
+# values appear on the same contribution, a reasoner infers they denote the
+# same individual rather than rejecting the data.
+
+cw:Contribution rdfs:subClassOf
+    [   rdf:type owl:Restriction ;
+        owl:onProperty cw:contributedBy ;
+        owl:cardinality "1"^^xsd:nonNegativeInteger ] ,
+    [   rdf:type owl:Restriction ;
+        owl:onProperty cw:involves ;
+        owl:cardinality "1"^^xsd:nonNegativeInteger ] ,
+    [   rdf:type owl:Restriction ;
+        owl:onProperty cw:hasRole ;
+        owl:maxCardinality "1"^^xsd:nonNegativeInteger ] .
+
+# --- Role subclasses ---
+# Not declared disjoint: cw:Screenwriter inherits from cw:Creator, and
+# imdb:Screenwriter (in the IMDB extension) inherits from both cw:Screenwriter
+# and imdb:FilmRole. Disjointness between Role subclasses would make
+# imdb:Screenwriter inconsistent.
+
+cw:Creator rdf:type owl:Class ;
+    rdfs:subClassOf cw:Role ;
+    rdfs:label "Creator"@en ;
+    rdfs:comment "A creator is a role held by a person who is the primary intellectual author or originator of a creative work or of the source material from which a work is derived."@en .
+
+cw:Author rdf:type owl:Class ;
+    rdfs:subClassOf cw:Creator ;
+    rdfs:label "Author"@en ;
+    rdfs:comment "An author is a person who wrote the original literary work from which a creative work is adapted."@en .
+
+cw:Screenwriter rdf:type owl:Class ;
+    rdfs:subClassOf cw:Creator ;
+    rdfs:label "Screenwriter"@en ;
+    rdfs:comment "A screenwriter is a person who writes the script for a work intended for screen, stage, or broadcast. Placed in the shared namespace because screenwriting is not specific to film: theatre, radio, and podcasting all employ screenwriters. Domain-specific ontologies subclass this to scope it to a particular medium."@en .
+
+cw:SourceMaterial rdf:type owl:Class ;
+    rdfs:subClassOf cw:Author ;
+    rdfs:label "Source Material Role"@en ;
+    rdfs:comment "A source material role is held by a person who provided the work from which a derived creative work was adapted, without writing the screenplay or script directly. Placed in the shared namespace because source material credits appear in all cultural domains: theatre adaptations credit novelists, operas credit librettists, films credit the authors of their source novels."@en .
+
+cw:Translator rdf:type owl:Class ;
+    rdfs:subClassOf cw:Role ;
+    rdfs:label "Translator"@en ;
+    rdfs:comment "A translator is a person who translates a creative work or its title from one language into another."@en .
+
+# --- Lookup classes ---
+
+cw:Genre rdf:type owl:Class ;
+    rdfs:label "Genre"@en ;
+    rdfs:comment "A thematic or stylistic category used to classify creative works. Genre individuals are pre-populated in this shared ontology so that any system importing cw: can enumerate genre facets without knowledge of any specific dataset. A dataset with its own genre identifiers declares owl:sameAs links to these individuals."@en .
+
+cw:WorkType rdf:type owl:Class ;
+    rdfs:label "Work Type"@en ;
+    rdfs:comment "A classification of the format or medium of a creative work. WorkType individuals are pre-populated in this shared ontology so that any system importing cw: can enumerate content-type facets without knowledge of any specific dataset."@en .
+
+cw:TitleTypeCategory rdf:type owl:Class ;
+    rdfs:label "Title Type Category"@en ;
+    rdfs:comment "A classification of the distribution context or rendering mode of an alternative title. Placed in the shared namespace because alternative title contexts are universal: books have working titles, festival titles, and informal titles just as films do. Domain-specific ontologies add their own individuals for contexts specific to their medium."@en .
+
+cw:Language rdf:type owl:Class ;
+    rdfs:label "Language"@en ;
+    rdfs:comment "A human language used to describe the language of a title variant. Language individuals are not pre-populated: they are minted during data mapping using ISO 639 codes as IRI fragments, with optional owl:sameAs links to Lexvo or similar Linked Data authorities."@en .
+
+cw:Region rdf:type owl:Class ;
+    rdfs:label "Region"@en ;
+    rdfs:comment "A geographic region used to describe the target market of a title variant. ISO 3166-1 region individuals are minted during data mapping using standard codes as IRI fragments. IMDB-proprietary X-code regions are defined as named individuals in the imdb: namespace because IMDB is the authority that coined them."@en .
+
+# =============================================================================
+# Object Properties
+# =============================================================================
+
+# --- Contribution properties ---
+
+cw:contributedBy rdf:type owl:ObjectProperty ;
+    rdfs:domain cw:Contribution ;
+    rdfs:range cw:RealPerson ;
+    rdfs:label "contributed by"@en ;
+    rdfs:comment "The real person who made this contribution. The cardinality-1 axiom asserts that every Contribution is related to exactly one RealPerson."@en .
+
+cw:involves rdf:type owl:ObjectProperty ;
+    rdfs:domain cw:Contribution ;
+    rdfs:range cw:CreativeWork ;
+    rdfs:label "involves"@en ;
+    rdfs:comment "The creative work to which this contribution was made. The cardinality-1 axiom asserts that every Contribution involves exactly one CreativeWork."@en .
+
+cw:hasRole rdf:type owl:ObjectProperty ;
+    rdfs:domain cw:Contribution ;
+    rdfs:range cw:Role ;
+    rdfs:label "has role"@en ;
+    rdfs:comment "The role in which the person contributed to the work. The maxCardinality-1 axiom asserts that at most one role is associated with a given Contribution."@en .
+
+# --- Work hierarchy properties ---
+
+cw:partOfSeries rdf:type owl:ObjectProperty ;
+    rdfs:domain cw:WorkVolume ;
+    rdfs:range cw:WorkSeries ;
+    rdfs:label "part of series"@en ;
+    rdfs:comment "The work series to which this volume belongs. The cardinality-1 axiom asserts that every WorkVolume belongs to exactly one WorkSeries."@en .
+
+cw:partOfVolume rdf:type owl:ObjectProperty ;
+    rdfs:domain cw:WorkUnit ;
+    rdfs:range cw:WorkVolume ;
+    rdfs:label "part of volume"@en ;
+    rdfs:comment "The work volume to which this unit belongs. The maxCardinality-1 axiom is used rather than exact cardinality because some datasets record episodes without a known season assignment."@en .
+
+cw:isAdaptationOf rdf:type owl:ObjectProperty ;
+    rdfs:domain cw:CreativeWork ;
+    rdfs:range cw:CreativeWork ;
+    rdfs:label "is adaptation of"@en ;
+    rdfs:comment "A creative work from which this work is derived or adapted. No cardinality restriction: a work may draw from multiple sources, and a source may inspire multiple adaptations. Attribution of source authors to derived works is inferred by traversing this property to the source work and reading its existing contributions, rather than by creating redundant contribution triples on the derived work."@en .
+
+# --- CreativeWork properties ---
+
+cw:hasType rdf:type owl:ObjectProperty ;
+    rdfs:domain cw:CreativeWork ;
+    rdfs:range cw:WorkType ;
+    rdfs:label "has type"@en ;
+    rdfs:comment "The content type classification of this work."@en .
+
+cw:hasGenre rdf:type owl:ObjectProperty ;
+    rdfs:domain cw:CreativeWork ;
+    rdfs:range cw:Genre ;
+    rdfs:label "has genre"@en ;
+    rdfs:comment "A genre associated with this work. A work may have multiple genres."@en .
+
+cw:hasAlternativeTitle rdf:type owl:ObjectProperty ;
+    owl:inverseOf cw:isAltTitleOf ;
+    rdfs:domain cw:CreativeWork ;
+    rdfs:range cw:AlternativeTitle ;
+    rdfs:label "has alternative title"@en ;
+    rdfs:comment "An alternative title variant of this work. Inverse of cw:isAltTitleOf."@en .
+
+cw:associatedWith rdf:type owl:ObjectProperty ;
+    rdfs:domain cw:RealPerson ;
+    rdfs:range cw:CreativeWork ;
+    rdfs:label "associated with"@en ;
+    rdfs:comment "A creative work with which this person is broadly associated, independently of any credited contribution. Captures person-work links that carry no credit details. Kept as a plain binary property because there are no attributes to reify."@en .
+
+# --- AlternativeTitle properties ---
+
+cw:isAltTitleOf rdf:type owl:ObjectProperty ;
+    rdfs:domain cw:AlternativeTitle ;
+    rdfs:range cw:CreativeWork ;
+    rdfs:label "is alternative title of"@en ;
+    rdfs:comment "The creative work to which this alternative title belongs."@en .
+
+cw:inLanguage rdf:type owl:ObjectProperty ;
+    rdfs:domain cw:AlternativeTitle ;
+    rdfs:range cw:Language ;
+    rdfs:label "in language"@en ;
+    rdfs:comment "The language in which this alternative title is expressed."@en .
+
+cw:workLanguage rdf:type owl:ObjectProperty ;
+    rdfs:domain cw:CreativeWork ;
+    rdfs:range cw:Language ;
+    rdfs:label "work language"@en ;
+    rdfs:comment "The primary language in which a creative work is expressed. Distinct from cw:inLanguage, which describes the language of a specific alternative title variant. A work has one primary language; it may have many alternative title variants in different languages. Placed in cw: because primary language applies uniformly across all cultural domains: books, films, music albums, and theatrical productions all have a primary language of expression."@en .
+
+cw:forRegion rdf:type owl:ObjectProperty ;
+    rdfs:domain cw:AlternativeTitle ;
+    rdfs:range cw:Region ;
+    rdfs:label "for region"@en ;
+    rdfs:comment "The geographic region in which this alternative title is used."@en .
+
+cw:hasTitleType rdf:type owl:ObjectProperty ;
+    rdfs:domain cw:AlternativeTitle ;
+    rdfs:range cw:TitleTypeCategory ;
+    rdfs:label "has title type"@en ;
+    rdfs:comment "The classification of this alternative title's distribution context or rendering mode."@en .
+
+# --- Person properties ---
+
+cw:hasProfession rdf:type owl:ObjectProperty ;
+    rdfs:domain cw:RealPerson ;
+    rdfs:range cw:Role ;
+    rdfs:label "has profession"@en ;
+    rdfs:comment "A general career role held by this person, independent of any specific work. Operates at career scope; cw:hasRole on a Contribution operates at contribution scope. The same Role individuals serve both properties, preserving the three-level professional identity through property scope rather than separate class hierarchies."@en .
+
+# --- Character properties ---
+
+cw:appearsIn rdf:type owl:ObjectProperty ;
+    rdfs:domain cw:FictionalCharacter ;
+    rdfs:range cw:CreativeWork ;
+    rdfs:label "appears in"@en ;
+    rdfs:comment "A creative work in which this character appears. A character may appear in multiple works."@en .
+
+# =============================================================================
+# Datatype Properties
+# =============================================================================
+
+cw:primaryTitle rdf:type owl:DatatypeProperty ;
+    rdfs:domain cw:CreativeWork ;
+    rdfs:range xsd:string ;
+    rdfs:label "primary title"@en ;
+    rdfs:comment "The main display title of the work, typically in the language of the primary audience."@en .
+
+cw:originalTitle rdf:type owl:DatatypeProperty ;
+    rdfs:domain cw:CreativeWork ;
+    rdfs:range xsd:string ;
+    rdfs:label "original title"@en ;
+    rdfs:comment "The title of the work in its original language of production."@en .
+
+cw:startYear rdf:type owl:DatatypeProperty ;
+    rdfs:domain cw:CreativeWork ;
+    rdfs:range xsd:gYear ;
+    rdfs:label "start year"@en ;
+    rdfs:comment "The year in which the work was first released or began airing. Typed as xsd:gYear rather than xsd:integer to carry calendar semantics."@en .
+
+cw:endYear rdf:type owl:DatatypeProperty ;
+    rdfs:domain cw:WorkSeries ;
+    rdfs:range xsd:gYear ;
+    rdfs:label "end year"@en ;
+    rdfs:comment "The year in which the series concluded. Absent for ongoing series. Scoped to WorkSeries by domain declaration: a reasoner infers from the presence of this property that the subject is a WorkSeries."@en .
+
+cw:name rdf:type owl:DatatypeProperty ;
+    rdfs:range xsd:string ;
+    rdfs:label "name"@en ;
+    rdfs:comment "The full name of a person or character as commonly known or credited. No domain restriction: applies to both RealPerson and FictionalCharacter."@en .
+
+cw:birthYear rdf:type owl:DatatypeProperty ;
+    rdfs:domain cw:RealPerson ;
+    rdfs:range xsd:gYear ;
+    rdfs:label "birth year"@en ;
+    rdfs:comment "The year in which the person was born. Typed as xsd:gYear to carry calendar semantics."@en .
+
+cw:deathYear rdf:type owl:DatatypeProperty ;
+    rdfs:domain cw:RealPerson ;
+    rdfs:range xsd:gYear ;
+    rdfs:label "death year"@en ;
+    rdfs:comment "The year in which the person died. Absent for living persons. Typed as xsd:gYear to carry calendar semantics."@en .
+
+cw:akaTitle rdf:type owl:DatatypeProperty ;
+    rdfs:domain cw:AlternativeTitle ;
+    rdfs:range xsd:string ;
+    rdfs:label "also known as"@en ;
+    rdfs:comment "The text of the alternative title."@en .
+
+cw:isOriginalTitle rdf:type owl:DatatypeProperty ;
+    rdfs:domain cw:AlternativeTitle ;
+    rdfs:range xsd:boolean ;
+    rdfs:label "is original title"@en ;
+    rdfs:comment "Indicates whether this alternative title entry represents the original release title stored redundantly as an AKA entry. When true, region and language associations are typically absent."@en .
+
+# =============================================================================
+# Genre Individuals (28)
+# Pre-populated so any system importing cw: can enumerate genre facets.
+# A dataset with its own genre identifiers declares owl:sameAs to these.
+# All 28 genre values from the IMDB genre table are represented; 3 that do
+# not appear in this specific dataset (Biography, SciFi, FilmNoir) are
+# included for vocabulary completeness — the ontology describes the domain,
+# not just one dataset's coverage.
+# NOTE: the genre "Short" (IMDB genre_id=2) is named cw:ShortGenre to avoid
+# collision with cw:ShortFilm, which is the WorkType individual for short films.
+# =============================================================================
+
+cw:Documentary rdf:type owl:NamedIndividual , cw:Genre ;
+    rdfs:label "Documentary"@en ;
+    rdfs:comment "A work presenting factual information about real events, people, or subjects."@en .
+
+cw:ShortGenre rdf:type owl:NamedIndividual , cw:Genre ;
+    rdfs:label "Short"@en ;
+    rdfs:comment "A short-form work classified by genre rather than by format. As a genre, this indicates works whose brevity is an artistic or narrative choice rather than a format constraint."@en .
+
+cw:Animation rdf:type owl:NamedIndividual , cw:Genre ;
+    rdfs:label "Animation"@en ;
+    rdfs:comment "A work produced primarily through animated imagery rather than live action."@en .
+
+cw:Comedy rdf:type owl:NamedIndividual , cw:Genre ;
+    rdfs:label "Comedy"@en ;
+    rdfs:comment "A work intended primarily to entertain through humour."@en .
+
+cw:Romance rdf:type owl:NamedIndividual , cw:Genre ;
+    rdfs:label "Romance"@en ;
+    rdfs:comment "A work centred on a romantic relationship between characters."@en .
+
+cw:Sport rdf:type owl:NamedIndividual , cw:Genre ;
+    rdfs:label "Sport"@en ;
+    rdfs:comment "A work centred on athletic competition or sporting events."@en .
+
+cw:Action rdf:type owl:NamedIndividual , cw:Genre ;
+    rdfs:label "Action"@en ;
+    rdfs:comment "A work emphasising physical activity, combat, or fast-paced sequences."@en .
+
+cw:News rdf:type owl:NamedIndividual , cw:Genre ;
+    rdfs:label "News"@en ;
+    rdfs:comment "A work presenting current events and journalistic reporting."@en .
+
+cw:Drama rdf:type owl:NamedIndividual , cw:Genre ;
+    rdfs:label "Drama"@en ;
+    rdfs:comment "A work centred on realistic characters and emotionally grounded narratives."@en .
+
+cw:Fantasy rdf:type owl:NamedIndividual , cw:Genre ;
+    rdfs:label "Fantasy"@en ;
+    rdfs:comment "A work set in an imaginary world involving supernatural or magical elements."@en .
+
+cw:Horror rdf:type owl:NamedIndividual , cw:Genre ;
+    rdfs:label "Horror"@en ;
+    rdfs:comment "A work designed to evoke fear, dread, or unease in its audience."@en .
+
+cw:Biography rdf:type owl:NamedIndividual , cw:Genre ;
+    rdfs:label "Biography"@en ;
+    rdfs:comment "A work depicting the life story of a real person."@en .
+
+cw:Music rdf:type owl:NamedIndividual , cw:Genre ;
+    rdfs:label "Music"@en ;
+    rdfs:comment "A work centred on musical performance or the music industry."@en .
+
+cw:War rdf:type owl:NamedIndividual , cw:Genre ;
+    rdfs:label "War"@en ;
+    rdfs:comment "A work centred on armed conflict, military operations, or wartime experience."@en .
+
+cw:Crime rdf:type owl:NamedIndividual , cw:Genre ;
+    rdfs:label "Crime"@en ;
+    rdfs:comment "A work centred on criminal activity, law enforcement, or the justice system."@en .
+
+cw:Western rdf:type owl:NamedIndividual , cw:Genre ;
+    rdfs:label "Western"@en ;
+    rdfs:comment "A work set in the American frontier, typically in the nineteenth century."@en .
+
+cw:Family rdf:type owl:NamedIndividual , cw:Genre ;
+    rdfs:label "Family"@en ;
+    rdfs:comment "A work suitable for and often centred on family audiences."@en .
+
+cw:Adventure rdf:type owl:NamedIndividual , cw:Genre ;
+    rdfs:label "Adventure"@en ;
+    rdfs:comment "A work centred on exciting journeys, quests, or exploration."@en .
+
+cw:History rdf:type owl:NamedIndividual , cw:Genre ;
+    rdfs:label "History"@en ;
+    rdfs:comment "A work set in or depicting a specific historical period or event."@en .
+
+cw:Mystery rdf:type owl:NamedIndividual , cw:Genre ;
+    rdfs:label "Mystery"@en ;
+    rdfs:comment "A work centred on solving an unknown, typically a crime."@en .
+
+cw:SciFi rdf:type owl:NamedIndividual , cw:Genre ;
+    rdfs:label "Science Fiction"@en ;
+    rdfs:comment "A work exploring speculative scientific or technological concepts, often set in the future."@en .
+
+cw:Thriller rdf:type owl:NamedIndividual , cw:Genre ;
+    rdfs:label "Thriller"@en ;
+    rdfs:comment "A work designed to generate suspense and excitement, often involving danger or conspiracy."@en .
+
+cw:Musical rdf:type owl:NamedIndividual , cw:Genre ;
+    rdfs:label "Musical"@en ;
+    rdfs:comment "A work in which songs and dance numbers are integrated into the narrative."@en .
+
+cw:FilmNoir rdf:type owl:NamedIndividual , cw:Genre ;
+    rdfs:label "Film Noir"@en ;
+    rdfs:comment "A work characterised by cynical themes, moral ambiguity, and stylised visual aesthetics, originating in Hollywood crime films of the 1940s and 1950s."@en .
+
+cw:GameShow rdf:type owl:NamedIndividual , cw:Genre ;
+    rdfs:label "Game Show"@en ;
+    rdfs:comment "A broadcast programme in which contestants compete in games or quizzes."@en .
+
+cw:TalkShow rdf:type owl:NamedIndividual , cw:Genre ;
+    rdfs:label "Talk Show"@en ;
+    rdfs:comment "A broadcast programme in which a host interviews guests or discusses topics with an audience."@en .
+
+cw:RealityTV rdf:type owl:NamedIndividual , cw:Genre ;
+    rdfs:label "Reality TV"@en ;
+    rdfs:comment "A broadcast programme documenting unscripted real-life situations, often featuring non-professional participants."@en .
+
+cw:Adult rdf:type owl:NamedIndividual , cw:Genre ;
+    rdfs:label "Adult"@en ;
+    rdfs:comment "A work containing content intended exclusively for adult audiences."@en .
+
+# =============================================================================
+# WorkType class is defined above. Individuals are not pre-populated in cw:
+# because all currently-known work type values (Movie, TvSeries, Novel, Album,
+# etc.) are domain-specific. Domain ontologies pre-populate their own
+# WorkType individuals: film.ttl defines film:Movie, film:TvSeries, etc.;
+# a book ontology would define book:Novel, book:ShortStory; a music ontology
+# would define music:Album, music:Single. Cross-dataset alignment within a
+# domain proceeds via owl:sameAs to canonical domain individuals.
+# =============================================================================
+
+# =============================================================================
+# TitleTypeCategory Individuals — universal (7)
+# These describe contexts that apply to alternative titles in any cultural
+# domain. Domain-specific ontologies add their own TitleTypeCategory
+# individuals for medium-specific contexts (e.g. imdb:Dvd, imdb:Tv).
+# 4 of these (Alternative, Working, Tv, Video) have zero occurrences in
+# this specific IMDB dataset; they are included because the ontology
+# describes the domain vocabulary, not just one dataset's coverage.
+# =============================================================================
+
+cw:WorkingTitle rdf:type owl:NamedIndividual , cw:TitleTypeCategory ;
+    rdfs:label "Working Title"@en ;
+    rdfs:comment "A provisional title used during the production or development of a work, before the final title is decided."@en .
+
+cw:AlternativeTitleType rdf:type owl:NamedIndividual , cw:TitleTypeCategory ;
+    rdfs:label "Alternative Title Type"@en ;
+    rdfs:comment "A general-purpose alternative commercial title, distinct from the primary and original titles. Named cw:AlternativeTitleType (not cw:AlternativeTitle) to avoid a naming collision with the cw:AlternativeTitle class."@en .
+
+cw:OriginalTitle rdf:type owl:NamedIndividual , cw:TitleTypeCategory ;
+    rdfs:label "Original Title"@en ;
+    rdfs:comment "The title of the work in its original language and release context. In datasets that store original titles redundantly as AKA entries, entries of this type are typically not mapped to AlternativeTitle instances — the original title is already captured via cw:originalTitle on the work."@en .
+
+cw:FestivalTitle rdf:type owl:NamedIndividual , cw:TitleTypeCategory ;
+    rdfs:label "Festival Title"@en ;
+    rdfs:comment "A title used specifically at a festival screening. Applicable across domains: book fairs, music festivals, and theatre festivals all use titles specific to their screening context."@en .
+
+cw:InformalTitle rdf:type owl:NamedIndividual , cw:TitleTypeCategory ;
+    rdfs:label "Informal Title"@en ;
+    rdfs:comment "A colloquial or informal alternative title not used in official distribution contexts."@en .
+
+cw:TransliteratedTitle rdf:type owl:NamedIndividual , cw:TitleTypeCategory ;
+    rdfs:label "Transliterated Title"@en ;
+    rdfs:comment "A title rendered by transliterating the original script into another writing system, such as converting a Japanese title to Latin characters."@en .
+
+cw:LiteralTitle rdf:type owl:NamedIndividual , cw:TitleTypeCategory ;
+    rdfs:label "Literal Title"@en ;
+    rdfs:comment "A title that provides a direct literal translation of the original, as opposed to an adapted or localised translation intended for a target market."@en .
+
+# =============================================================================
+# SourceMaterial Individuals (4)
+# Individuals of type cw:SourceMaterial, placed in cw: because source
+# material credits are universal across all creative domains.
+# Derived from the IMDB job field values: 'novel', 'based on the novel by',
+# 'libretto', 'story', 'idea'.
+# =============================================================================
+
+cw:NovelAuthor rdf:type owl:NamedIndividual , cw:SourceMaterial ;
+    rdfs:label "Novel Author"@en ;
+    rdfs:comment "A person credited for writing the novel on which a derived work is based. Corresponds to IMDB job values 'novel' and 'based on the novel by'."@en .
+
+cw:LibrettoAuthor rdf:type owl:NamedIndividual , cw:SourceMaterial ;
+    rdfs:label "Libretto Author"@en ;
+    rdfs:comment "A person credited for writing the libretto on which a derived work is based. A libretto is the text of an opera, oratorio, or musical."@en .
+
+cw:StoryAuthor rdf:type owl:NamedIndividual , cw:SourceMaterial ;
+    rdfs:label "Story Author"@en ;
+    rdfs:comment "A person credited for contributing the original story concept or treatment from which a work was developed, without writing the full script."@en .
+
+cw:IdeaAuthor rdf:type owl:NamedIndividual , cw:SourceMaterial ;
+    rdfs:label "Idea Author"@en ;
+    rdfs:comment "A person credited for the original concept or idea from which a work was developed."@en .
+
+# =============================================================================
+# Universal Creative and Production Role Individuals (5)
+# These roles exist across all performing arts and creative domains.
+# Theatre has directors and actors; music has composers and producers;
+# books and journalism have editors. Placed in cw: so any cultural works system
+# can reference them without importing a domain-specific extension.
+# A film/TV dataset uses these via cw:hasRole on Contributions and
+# cw:hasProfession on RealPersons alongside the film: vocabulary.
+# =============================================================================
+
+cw:Actor rdf:type owl:NamedIndividual , cw:Role ;
+    rdfs:label "Actor"@en ;
+    rdfs:comment "A person who performs a role in a creative work, portraying a character or appearing as themselves. Exists across theatre, opera, film, and television."@en .
+
+cw:Director rdf:type owl:NamedIndividual , cw:Role ;
+    rdfs:label "Director"@en ;
+    rdfs:comment "A person who directs the artistic and technical realisation of a creative work. Exists across theatre, opera, film, and music."@en .
+
+cw:Producer rdf:type owl:NamedIndividual , cw:Role ;
+    rdfs:label "Producer"@en ;
+    rdfs:comment "A person who oversees the financial, organisational, and logistical aspects of producing a creative work. Exists across theatre, music, film, and live events."@en .
+
+cw:Composer rdf:type owl:NamedIndividual , cw:Role ;
+    rdfs:label "Composer"@en ;
+    rdfs:comment "A person who creates original music for a creative work. Exists across concert music, opera, film, theatre, and song."@en .
+
+cw:Editor rdf:type owl:NamedIndividual , cw:Role ;
+    rdfs:label "Editor"@en ;
+    rdfs:comment "A person who selects, arranges, and refines the material of a creative work into its final form. Exists across books, journalism, and film."@en .
+
+# =============================================================================
+# Generic Role Individuals (7)
+# These roles are universal across creative domains: books, music, theatre,
+# and film all employ managers, executives, legal staff, publicists,
+# assistants, and talent agents. Placed in cw: so that a cross-domain query
+# for "all managers across datasets" works without owl:sameAs declarations.
+# All derive from the IMDB role table but the concepts predate IMDB.
+# =============================================================================
+
+cw:Manager rdf:type owl:NamedIndividual , cw:Role ;
+    rdfs:label "Manager"@en ;
+    rdfs:comment "A person in a management role overseeing the professional or operational activities of a production or talent."@en .
+
+cw:Executive rdf:type owl:NamedIndividual , cw:Role ;
+    rdfs:label "Executive"@en ;
+    rdfs:comment "A person in an executive or senior decision-making capacity."@en .
+
+cw:Legal rdf:type owl:NamedIndividual , cw:Role ;
+    rdfs:label "Legal"@en ;
+    rdfs:comment "A person providing legal services in support of a production or creative work."@en .
+
+cw:Publicist rdf:type owl:NamedIndividual , cw:Role ;
+    rdfs:label "Publicist"@en ;
+    rdfs:comment "A person responsible for public relations and media communications for a production or talent."@en .
+
+cw:Assistant rdf:type owl:NamedIndividual , cw:Role ;
+    rdfs:label "Assistant"@en ;
+    rdfs:comment "A person serving in a general assistant or support capacity."@en .
+
+cw:Miscellaneous rdf:type owl:NamedIndividual , cw:Role ;
+    rdfs:label "Miscellaneous"@en ;
+    rdfs:comment "A catch-all role for contributions that do not fall into any other named category. Included for vocabulary completeness; not a meaningful semantic classification."@en .
+
+cw:TalentAgent rdf:type owl:NamedIndividual , cw:Role ;
+    rdfs:label "Talent Agent"@en ;
+    rdfs:comment "A person who represents and manages the professional interests of talent across the creative industry."@en .

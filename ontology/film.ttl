@@ -1,0 +1,339 @@
+@prefix cw:    <http://localhost:3030/culturalworks/ontology#> .
+@prefix film:  <http://localhost:3030/culturalworks/film#> .
+@prefix owl:   <http://www.w3.org/2002/07/owl#> .
+@prefix rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:   <http://www.w3.org/2001/XMLSchema#> .
+@prefix dc:    <http://purl.org/dc/elements/1.1/> .
+
+# =============================================================================
+# Ontology declaration
+# =============================================================================
+
+<http://localhost:3030/culturalworks/film> rdf:type owl:Ontology ;
+    owl:imports <http://localhost:3030/culturalworks/ontology> ;
+    dc:title "Film and Television Domain Ontology"@en ;
+    dc:description """The second tier of a three-tier cultural works ontology.
+Extends the shared cw: vocabulary with classes, properties, and individuals
+specific to the film and television domain. This vocabulary is independent of
+any particular dataset or data source: it represents the shared domain
+knowledge that any film or television knowledge graph would need, regardless
+of whether its data comes from IMDB, the BFI, MUBI, or another source.
+
+A dataset-specific ontology (such as imdb.ttl) imports this file and adds
+only the concepts that are specific to that data source. A third party
+building a French cinema knowledge graph would import cw: and film: and
+define their own system-specific concepts in a separate namespace, declaring
+owl:sameAs links to film: individuals where concepts overlap."""@en ;
+    dc:creator "DOSQUET Pierre" , "GHOSEZ Arthur" ,
+               "MANUEL CANOSA BARBEITO Angel" , "NAOUASS Mouad" ;
+    owl:versionInfo "1.0" .
+
+# =============================================================================
+# Classes
+# =============================================================================
+
+film:FilmRole rdf:type owl:Class ;
+    rdfs:subClassOf cw:Role ;
+    rdfs:label "Film Role"@en ;
+    rdfs:comment "A role specific to film and television production. Named individuals of this class cover the film and television credit vocabulary and career profession vocabulary. Generic roles that exist across all cultural domains (Actor, Director, Producer, Composer, Editor, Cinematographer) are defined in cw:Role; film:FilmRole covers roles that are specific to the audiovisual production context."@en .
+
+film:Screenwriter rdf:type owl:Class ;
+    rdfs:subClassOf cw:Screenwriter , film:FilmRole ;
+    rdfs:label "Film Screenwriter"@en ;
+    rdfs:comment "A screenwriter working specifically in the film and television domain. Inherits from cw:Screenwriter (the domain-agnostic creative role) and film:FilmRole (the film production context). Any film or television dataset needs this class; it is therefore placed in film: rather than in a dataset-specific namespace."@en .
+
+film:FilmContribution rdf:type owl:Class ;
+    rdfs:subClassOf cw:Contribution ;
+    rdfs:label "Film Contribution"@en ;
+    rdfs:comment "A credited contribution to a film or television work. Extends cw:Contribution with film-specific properties: portrayal of fictional characters by performers and association with film-domain role individuals. Placed in film: because any film or television dataset needs this concept, regardless of data source. Dataset-specific extensions (such as imdb:billingOrder for IMDB principal credits) attach to this class through their own namespaces."@en .
+
+# =============================================================================
+# Object Properties
+# =============================================================================
+
+film:portrays rdf:type owl:ObjectProperty ;
+    rdfs:domain film:FilmContribution ;
+    rdfs:range cw:FictionalCharacter ;
+    rdfs:label "portrays"@en ;
+    rdfs:comment "The fictional character portrayed by the contributor in this work. Domain restricted to film:FilmContribution because character portrayal is specific to audiovisual works."@en .
+
+film:portrayedBy rdf:type owl:ObjectProperty ;
+    rdfs:domain cw:FictionalCharacter ;
+    rdfs:range cw:RealPerson ;
+    rdfs:label "portrayed by"@en ;
+    rdfs:comment "The real person who portrays this character in a specific work."@en .
+
+# =============================================================================
+# Datatype Properties
+# =============================================================================
+
+film:runtimeMinutes rdf:type owl:DatatypeProperty ;
+    rdfs:domain cw:CreativeWork ;
+    rdfs:range xsd:integer ;
+    rdfs:label "runtime in minutes"@en ;
+    rdfs:comment "The duration of the work in minutes. Placed in film: because runtime in minutes is specific to audiovisual media; books are measured in pages, music in track duration."@en .
+
+film:seasonNumber rdf:type owl:DatatypeProperty ;
+    rdfs:domain cw:WorkVolume ;
+    rdfs:range xsd:integer ;
+    rdfs:label "season number"@en ;
+    rdfs:comment "The sequential number of this season within its parent series."@en .
+
+film:episodeNumber rdf:type owl:DatatypeProperty ;
+    rdfs:domain cw:WorkUnit ;
+    rdfs:range xsd:integer ;
+    rdfs:label "episode number"@en ;
+    rdfs:comment "The sequential number of this episode within its parent volume."@en .
+
+# =============================================================================
+# Film and Television Role Individuals
+#
+# Principal credit roles that are specific to audiovisual production contexts.
+# Universal roles that exist across all performing arts (Actor, Director,
+# Producer, Composer, Editor, Cinematographer) are defined in cw: instead.
+#
+# M3 mapping note:
+#   category_id=7 (actor)   -> cw:Actor
+#   category_id=8 (actress) -> cw:Actor  (merged: gender is not a role)
+#   category_id=9 (writer) with null job -> imdb:Writer (IMDB-specific fallback)
+#   category_id=9 (writer) with specific job -> specific film:Screenwriter individual
+# =============================================================================
+
+film:CoDirector rdf:type owl:NamedIndividual , film:FilmRole ;
+    rdfs:label "Co-Director"@en ;
+    rdfs:comment "A person who shares directing responsibilities on a production. Modelled as a named individual rather than a subclass of cw:Director because cw:Director is itself an individual, and OWL 2 DL does not permit subclassing of individuals."@en .
+
+film:ProductionDesigner rdf:type owl:NamedIndividual , film:FilmRole ;
+    rdfs:label "Production Designer"@en ;
+    rdfs:comment "A person responsible for the overall visual concept and design of a production's physical environment."@en .
+
+film:Self rdf:type owl:NamedIndividual , film:FilmRole ;
+    rdfs:label "Self"@en ;
+    rdfs:comment "A credit indicating that the person appears in the work as themselves rather than portraying a fictional character. Common in documentaries and non-fiction audiovisual content."@en .
+
+film:ArchiveFootage rdf:type owl:NamedIndividual , film:FilmRole ;
+    rdfs:label "Archive Footage"@en ;
+    rdfs:comment "A credit indicating that the person appears in the work through previously recorded video footage."@en .
+
+film:ArchiveSound rdf:type owl:NamedIndividual , film:FilmRole ;
+    rdfs:label "Archive Sound"@en ;
+    rdfs:comment "A credit indicating that the person appears in the work through previously recorded audio."@en .
+
+
+film:Cinematographer rdf:type owl:NamedIndividual , film:FilmRole ;
+    rdfs:label "Cinematographer"@en ;
+    rdfs:comment "A person responsible for the visual recording of an audiovisual production, including camera operation and lighting design. Also known as director of photography. Placed in film: rather than cw: because the term is specific to motion picture and television production; theatre uses lighting designers and stage managers, not cinematographers."@en .
+
+# Mutual disjointness for film-specific principal credit individuals
+[] rdf:type owl:AllDifferent ;
+    owl:distinctMembers (
+        film:CoDirector film:ProductionDesigner film:Cinematographer
+        film:Self film:ArchiveFootage film:ArchiveSound
+    ) .
+
+# =============================================================================
+# Film Screenwriter Individuals
+# TV-specific writing roles derived from the IMDB job field. Any television
+# dataset would use these; they are therefore placed in film: rather than imdb:.
+# =============================================================================
+
+film:StoryEditor rdf:type owl:NamedIndividual , film:Screenwriter ;
+    rdfs:label "Story Editor"@en ;
+    rdfs:comment "A person responsible for overseeing and developing the story content of a television production."@en .
+
+film:HeadWriter rdf:type owl:NamedIndividual , film:Screenwriter ;
+    rdfs:label "Head Writer"@en ;
+    rdfs:comment "The lead writer on a television series, responsible for the overall narrative direction."@en .
+
+film:Teleplay rdf:type owl:NamedIndividual , film:Screenwriter ;
+    rdfs:label "Teleplay Writer"@en ;
+    rdfs:comment "A person who writes a teleplay, adapting source material into a script for television."@en .
+
+film:SeriesCreator rdf:type owl:NamedIndividual , film:Screenwriter ;
+    rdfs:label "Series Creator"@en ;
+    rdfs:comment "The person who originated the concept and creative vision for a television series."@en .
+
+# =============================================================================
+# TitleTypeCategory Individuals — audiovisual-specific (4)
+# These describe distribution or display contexts specific to film and
+# television. Universal TitleTypeCategory individuals (WorkingTitle,
+# FestivalTitle, etc.) are defined in cw:. IMDB-specific display titles
+# (ImdbDisplay) are defined in imdb:.
+# =============================================================================
+
+film:Dvd rdf:type owl:NamedIndividual , cw:TitleTypeCategory ;
+    rdfs:label "DVD Title"@en ;
+    rdfs:comment "A title used on DVD or home video releases. Film and television specific: books and music albums do not have DVD titles."@en .
+
+film:Tv rdf:type owl:NamedIndividual , cw:TitleTypeCategory ;
+    rdfs:label "TV Title"@en ;
+    rdfs:comment "A title used specifically for television broadcast."@en .
+
+film:VideoTitle rdf:type owl:NamedIndividual , cw:TitleTypeCategory ;
+    rdfs:label "Video Title"@en ;
+    rdfs:comment "A title used for video-on-demand or streaming release."@en .
+
+film:BerlinFestivalTitle rdf:type owl:NamedIndividual , cw:TitleTypeCategory ;
+    rdfs:label "Berlin Film Festival Title"@en ;
+    rdfs:comment "A title used specifically at the Berlin International Film Festival. A more specific instance of cw:FestivalTitle scoped to this particular film festival."@en .
+
+# =============================================================================
+# Profession-only Film Role Individuals (29)
+# From the IMDB role table. Placed in film: because these are film and
+# television production roles that any film dataset would use, not concepts
+# specific to IMDB as a data source. A French cinema database, the BFI, or
+# MUBI would all need CameraDepartment, VisualEffects, etc.
+#
+# Not included in the AllDifferent declaration: they are not principal credit
+# roles and do not require mutual disjointness for reasoning purposes.
+#
+# M3 mapping: role_id values from talent_role map to these via cw:hasProfession.
+# The 8 overlapping roles (actor, director, etc.) that appear in both the
+# category and role tables map to cw: individuals (cw:Actor, cw:Director, etc.).
+# =============================================================================
+
+film:Soundtrack rdf:type owl:NamedIndividual , film:FilmRole ;
+    rdfs:label "Soundtrack"@en ;
+    rdfs:comment "A person who contributed to the soundtrack of a production."@en .
+
+film:MakeUpDepartment rdf:type owl:NamedIndividual , film:FilmRole ;
+    rdfs:label "Make Up Department"@en ;
+    rdfs:comment "A person working in the make-up department of a production."@en .
+
+film:MusicDepartment rdf:type owl:NamedIndividual , film:FilmRole ;
+    rdfs:label "Music Department"@en ;
+    rdfs:comment "A person working in the music department of a production."@en .
+
+film:AssistantDirector rdf:type owl:NamedIndividual , film:FilmRole ;
+    rdfs:label "Assistant Director"@en ;
+    rdfs:comment "A person assisting the director in managing the production process."@en .
+
+film:CameraDepartment rdf:type owl:NamedIndividual , film:FilmRole ;
+    rdfs:label "Camera Department"@en ;
+    rdfs:comment "A person working in the camera and electrical department of a production."@en .
+
+film:CastingDirector rdf:type owl:NamedIndividual , film:FilmRole ;
+    rdfs:label "Casting Director"@en ;
+    rdfs:comment "A person responsible for selecting actors for the roles in a production."@en .
+
+film:SetDecorator rdf:type owl:NamedIndividual , film:FilmRole ;
+    rdfs:label "Set Decorator"@en ;
+    rdfs:comment "A person responsible for furnishing and decorating sets on a production."@en .
+
+film:ArtDirector rdf:type owl:NamedIndividual , film:FilmRole ;
+    rdfs:label "Art Director"@en ;
+    rdfs:comment "A person responsible for the visual style and artistic direction of a production's sets."@en .
+
+film:Stunts rdf:type owl:NamedIndividual , film:FilmRole ;
+    rdfs:label "Stunts"@en ;
+    rdfs:comment "A person who performs or coordinates stunts in a production."@en .
+
+film:EditorialDepartment rdf:type owl:NamedIndividual , film:FilmRole ;
+    rdfs:label "Editorial Department"@en ;
+    rdfs:comment "A person working in the editorial or post-production department of a production."@en .
+
+film:CostumeDepartment rdf:type owl:NamedIndividual , film:FilmRole ;
+    rdfs:label "Costume Department"@en ;
+    rdfs:comment "A person working in the costume department of a production."@en .
+
+film:AnimationDepartment rdf:type owl:NamedIndividual , film:FilmRole ;
+    rdfs:label "Animation Department"@en ;
+    rdfs:comment "A person working in the animation department of a production."@en .
+
+film:ArtDepartment rdf:type owl:NamedIndividual , film:FilmRole ;
+    rdfs:label "Art Department"@en ;
+    rdfs:comment "A person working in the art department, responsible for the physical look of a production."@en .
+
+film:SpecialEffects rdf:type owl:NamedIndividual , film:FilmRole ;
+    rdfs:label "Special Effects"@en ;
+    rdfs:comment "A person responsible for practical special effects on a production."@en .
+
+film:ProductionManager rdf:type owl:NamedIndividual , film:FilmRole ;
+    rdfs:label "Production Manager"@en ;
+    rdfs:comment "A person responsible for the logistical management of a production's operations."@en .
+
+film:SoundDepartment rdf:type owl:NamedIndividual , film:FilmRole ;
+    rdfs:label "Sound Department"@en ;
+    rdfs:comment "A person working in the sound department of a production."@en .
+
+film:CastingDepartment rdf:type owl:NamedIndividual , film:FilmRole ;
+    rdfs:label "Casting Department"@en ;
+    rdfs:comment "A person working in the casting department of a production."@en .
+
+film:CostumeDesigner rdf:type owl:NamedIndividual , film:FilmRole ;
+    rdfs:label "Costume Designer"@en ;
+    rdfs:comment "A person who designs the costumes worn by performers in a production."@en .
+
+film:VisualEffects rdf:type owl:NamedIndividual , film:FilmRole ;
+    rdfs:label "Visual Effects"@en ;
+    rdfs:comment "A person responsible for digital visual effects in a production."@en .
+
+film:LocationManagement rdf:type owl:NamedIndividual , film:FilmRole ;
+    rdfs:label "Location Management"@en ;
+    rdfs:comment "A person responsible for finding and managing filming locations."@en .
+
+film:TransportationDepartment rdf:type owl:NamedIndividual , film:FilmRole ;
+    rdfs:label "Transportation Department"@en ;
+    rdfs:comment "A person working in the transportation department, responsible for logistics and vehicle management."@en .
+
+film:ElectricalDepartment rdf:type owl:NamedIndividual , film:FilmRole ;
+    rdfs:label "Electrical Department"@en ;
+    rdfs:comment "A person working in the electrical department, responsible for lighting equipment."@en .
+
+film:ProductionDepartment rdf:type owl:NamedIndividual , film:FilmRole ;
+    rdfs:label "Production Department"@en ;
+    rdfs:comment "A person working in the general production department."@en .
+
+film:ScriptDepartment rdf:type owl:NamedIndividual , film:FilmRole ;
+    rdfs:label "Script Department"@en ;
+    rdfs:comment "A person working in the script department, responsible for script continuity and management."@en .
+
+# =============================================================================
+# WorkType Individuals (9)
+# Pre-populated film/TV format individuals. Any film or television dataset
+# can enumerate these via cw:WorkType class, regardless of source. A book
+# or music ontology would not import film: and would define its own work
+# type individuals (book:Novel, music:Album, etc.) in its own namespace.
+#
+# VideoGame from the IMDB content_type table is not represented here:
+# video games are an interactive medium that is its own cultural domain
+# rather than a film/TV format. A future video-game ontology would define
+# its own work type individuals if needed.
+# =============================================================================
+
+film:ShortFilm rdf:type owl:NamedIndividual , cw:WorkType ;
+    rdfs:label "Short Film"@en ;
+    rdfs:comment "A short-form audiovisual work, typically under 40 minutes in duration."@en .
+
+film:Movie rdf:type owl:NamedIndividual , cw:WorkType ;
+    rdfs:label "Movie"@en ;
+    rdfs:comment "A feature-length theatrical film."@en .
+
+film:TvMovie rdf:type owl:NamedIndividual , cw:WorkType ;
+    rdfs:label "TV Movie"@en ;
+    rdfs:comment "A film produced for initial broadcast on television rather than theatrical release."@en .
+
+film:TvSeries rdf:type owl:NamedIndividual , cw:WorkType ;
+    rdfs:label "TV Series"@en ;
+    rdfs:comment "A television series consisting of multiple episodes broadcast over one or more seasons."@en .
+
+film:TvEpisode rdf:type owl:NamedIndividual , cw:WorkType ;
+    rdfs:label "TV Episode"@en ;
+    rdfs:comment "A single episode of a television series."@en .
+
+film:TvShort rdf:type owl:NamedIndividual , cw:WorkType ;
+    rdfs:label "TV Short"@en ;
+    rdfs:comment "A short-form work produced for television broadcast."@en .
+
+film:TvMiniSeries rdf:type owl:NamedIndividual , cw:WorkType ;
+    rdfs:label "TV Mini-Series"@en ;
+    rdfs:comment "A television series with a predetermined limited number of episodes."@en .
+
+film:TvSpecial rdf:type owl:NamedIndividual , cw:WorkType ;
+    rdfs:label "TV Special"@en ;
+    rdfs:comment "A one-off television production, typically outside the regular programming schedule."@en .
+
+film:Video rdf:type owl:NamedIndividual , cw:WorkType ;
+    rdfs:label "Video"@en ;
+    rdfs:comment "A work released directly to video or streaming platforms without a prior theatrical or broadcast release."@en .
