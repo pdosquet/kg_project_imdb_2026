@@ -5,3 +5,4 @@ data/generated/*.csv
 *.zip
 jena
 apache*
+.venv
