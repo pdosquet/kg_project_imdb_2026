@@ -1,0 +1,82 @@
+* { box-sizing: border-box; }
+body, html, #root { margin: 0; padding: 0; height: 100%; font-family: system-ui, sans-serif; color: #222; }
+.app { display: flex; flex-direction: column; height: 100vh; }
+.header {
+  display: flex; align-items: center; gap: 16px;
+  padding: 10px 16px; border-bottom: 1px solid #ccc; background: #f7f7f7;
+  flex-wrap: wrap;
+}
+.header-title { font-weight: bold; font-size: 18px; }
+.header-root-nav { display: flex; align-items: center; gap: 8px; }
+.header-label { color: #555; font-size: 14px; }
+.root-btn {
+  padding: 4px 10px; border: 1px solid #aaa; background: white; cursor: pointer; border-radius: 4px;
+  font-size: 14px;
+}
+.root-btn.active { background: #2563eb; color: white; border-color: #2563eb; }
+.header-endpoint { margin-left: auto; color: #666; font-family: monospace; font-size: 12px; }
+
+.search-row {
+  padding: 8px 16px; background: #fff; border-bottom: 1px solid #eee;
+}
+.search-bar {
+  width: 100%; max-width: 480px;
+  padding: 6px 10px; border: 1px solid #bbb; border-radius: 4px;
+  font-size: 14px;
+}
+
+.body { display: flex; flex: 1; overflow: hidden; }
+.filter-panel {
+  width: 30%; min-width: 280px; max-width: 420px;
+  padding: 12px; overflow-y: auto;
+  border-right: 1px solid #ddd; background: #fafafa;
+}
+.results-panel {
+  flex: 1; padding: 12px 20px; overflow-y: auto;
+}
+.results-header { font-weight: 500; margin-bottom: 12px; }
+.error { color: #b91c1c; padding: 8px; }
+
+.reset-btn {
+  margin-bottom: 12px; padding: 6px 12px; cursor: pointer;
+  background: white; border: 1px solid #aaa; border-radius: 4px;
+}
+.empty, .filter-empty { color: #888; font-style: italic; font-size: 13px; }
+
+.filter { margin-bottom: 18px; }
+.filter-heading { font-weight: 600; margin-bottom: 6px; font-size: 14px; }
+.filter-search, .filter-text {
+  width: 100%; padding: 4px 8px; border: 1px solid #bbb; border-radius: 3px;
+  font-size: 13px; margin-bottom: 6px;
+}
+.filter-values { max-height: 220px; overflow-y: auto; padding-left: 2px; }
+.filter-value { display: flex; align-items: center; gap: 6px; font-size: 13px; padding: 2px 0; }
+.filter-value.dim { color: #aaa; }
+.filter-value.dim .filter-value-count { color: #aaa; }
+.filter-value-label { flex: 1; }
+.filter-value-count {
+  color: #666; font-size: 12px; font-variant-numeric: tabular-nums;
+  background: #eef; border-radius: 8px; padding: 0 6px;
+}
+.filter-range { display: flex; align-items: center; gap: 8px; }
+.filter-range input { width: 90px; padding: 4px 6px; border: 1px solid #bbb; border-radius: 3px; }
+.filter-bool { display: flex; gap: 12px; font-size: 13px; }
+
+.results-list { display: flex; flex-direction: column; gap: 12px; }
+.card {
+  border: 1px solid #ddd; padding: 12px 14px; border-radius: 6px; background: white;
+}
+.card-title { font-weight: 600; font-size: 16px; margin-bottom: 6px; }
+.card-loading, .card-error { color: #888; font-size: 13px; }
+.card-error { color: #b91c1c; }
+.card-fields { margin: 0; padding: 0; }
+.card-field { display: flex; gap: 8px; font-size: 13px; padding: 1px 0; }
+.card-field dt { color: #555; min-width: 140px; flex-shrink: 0; }
+.card-field dd { margin: 0; color: #222; }
+
+.pagination {
+  display: flex; align-items: center; gap: 16px; margin-top: 16px;
+  padding-top: 12px; border-top: 1px solid #eee;
+}
+.pagination button { padding: 4px 12px; cursor: pointer; }
+.pagination button:disabled { opacity: 0.5; cursor: not-allowed; }

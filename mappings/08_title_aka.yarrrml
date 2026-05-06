@@ -86,7 +86,7 @@ mappings:
   # -------------------------------------------------------
 
   AlternativeTitleMapping:
-    sources: [['data/title_aka.csv~csv']]
+    sources: [['data/generated/title_aka.csv~csv']]
     s: http://localhost:3030/culturalworks/aka/$(title_id)/$(order)
     condition:
       function: equal

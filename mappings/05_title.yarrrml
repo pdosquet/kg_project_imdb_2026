@@ -54,7 +54,7 @@ mappings:
   # -------------------------------------------------------
 
   TitleMapping:
-    sources: [['data/title.csv~csv']]
+    sources: [['data/generated/title.csv~csv']]
     s: http://localhost:3030/culturalworks/title/$(title_id)
     po:
       - p: rdf:type

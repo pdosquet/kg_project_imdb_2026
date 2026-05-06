@@ -16,7 +16,7 @@
     void:exampleResource :map_GenreLookup_000.
 :map_GenreLookup_000 rml:logicalSource :source_000.
 :source_000 a rml:LogicalSource;
-    rml:source "data/genre_lookup.csv";
+    rml:source "data/seeded/genre_lookup.csv";
     rml:referenceFormulation ql:CSV.
 :map_GenreLookup_000 a rr:TriplesMap;
     rdfs:label "GenreLookup".

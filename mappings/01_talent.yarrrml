@@ -7,7 +7,7 @@ prefixes:
 mappings:
   TalentMapping:
     sources:
-      - ['talent.csv~csv']
+      - ['data/generated/talent.csv~csv']
     s: http://localhost:3030/culturalworks/person/$(talent_id)
     po:
       # Type assertion

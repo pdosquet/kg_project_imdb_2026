@@ -86,6 +86,32 @@ print("Seeded files: all present")
 print()
 
 # ================================================================
+# PART 0: Strip IMDB \N null markers from raw CSVs consumed by RML
+# ================================================================
+# IMDB's official non-commercial dump uses \N as the literal NULL
+# marker (MySQL mysqlimport convention). Without this step, RML
+# emits invalid xsd:integer / xsd:gYear literals like "\N"^^xsd:integer
+# for empty year and runtime fields. Cleaned copies are written to
+# data/generated/ and consumed by mappings.
+
+NULL_STRIP_FILES = ["talent.csv", "title.csv", "title_aka.csv", "title_principal.csv"]
+
+for fname in NULL_STRIP_FILES:
+    src = SRC / fname
+    dst = GEN / fname
+    rows = read_csv(src)
+    cleaned = [
+        {k: ("" if is_null(v) else v) for k, v in row.items()}
+        for row in rows
+    ]
+    fieldnames = list(rows[0].keys()) if rows else []
+    write_csv(dst, fieldnames, cleaned)
+    nulls = sum(1 for row in rows for v in row.values() if v == r"\N")
+    print(f"0. generated/{fname} — stripped {nulls} \\N markers")
+
+print()
+
+# ================================================================
 # PART 1: Title structural class lookup
 # ================================================================
 
@@ -134,7 +160,7 @@ print()
 
 characters = []
 
-for row in read_csv(SRC / "title_principal.csv"):
+for row in read_csv(GEN / "title_principal.csv"):
     if is_null(row["role_names"]):
         continue
     for name in [n.strip() for n in row["role_names"].split(",") if n.strip()]:
@@ -150,7 +176,7 @@ write_csv(GEN / "characters.csv",
           ["title_id", "talent_id", "join_key", "character_name", "character_iri"],
           characters)
 
-multi = sum(1 for r in read_csv(SRC / "title_principal.csv")
+multi = sum(1 for r in read_csv(GEN / "title_principal.csv")
             if not is_null(r["role_names"]) and "," in r["role_names"])
 print(f"2. generated/characters.csv — {len(characters)} rows ({multi} multi-valued exploded)")
 print()
@@ -205,7 +231,7 @@ role_resolution = {
 
 rows_out, unresolved = [], []
 
-for row in read_csv(SRC / "title_principal.csv"):
+for row in read_csv(GEN / "title_principal.csv"):
     cat = row["category_id"]
     job = "" if is_null(row["job"]) else row["job"]
     row["join_key"] = row["title_id"] + "_" + row["talent_id"]
@@ -329,7 +355,7 @@ check("additional_attrs_lookup", aa_keys, aa_vals)
 cr_keys = {(r["category_id"], r["job"]) for r in read_csv(SEED / "contribution_role_lookup.csv")}
 tp_combos = {
     (r["category_id"], "" if is_null(r["job"]) else r["job"])
-    for r in read_csv(SRC / "title_principal.csv")
+    for r in read_csv(GEN / "title_principal.csv")
 } - {("category_id", "job")}
 check("contribution_role_lookup", cr_keys, tp_combos)
 

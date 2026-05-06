@@ -27,16 +27,28 @@ done
 echo ""
 
 # ---- Data files (N-Triples) -------------------------------------------------
+# Prefer the closed graph (ontology + data + OWL 2 RL closure) when present.
+# Falls back to per-mapping .nt files if closure has not been run.
 echo "--- Data ---"
-for f in output/*.nt; do
-    echo -n "  Loading $f ... "
+if [[ -f output/closed.nt ]]; then
+    echo -n "  Loading output/closed.nt (with closure) ... "
     HTTP=$(curl -s -o /dev/null -w "%{http_code}" \
         -X POST \
         -H "Content-Type: application/n-triples" \
-        --data-binary @"$f" \
+        --data-binary @output/closed.nt \
         "$ENDPOINT")
     echo "HTTP $HTTP"
-done
+else
+    for f in output/*.nt; do
+        echo -n "  Loading $f ... "
+        HTTP=$(curl -s -o /dev/null -w "%{http_code}" \
+            -X POST \
+            -H "Content-Type: application/n-triples" \
+            --data-binary @"$f" \
+            "$ENDPOINT")
+        echo "HTTP $HTTP"
+    done
+fi
 
 echo ""
 

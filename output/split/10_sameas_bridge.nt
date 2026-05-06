@@ -1,0 +1,5 @@
+<http://localhost:3030/culturalworks/person/nm0000080> <http://www.w3.org/2002/07/owl#sameAs> <http://localhost:3030/culturalworks/ol/author/OL402527A> .
+<http://localhost:3030/culturalworks/person/nm0001348> <http://www.w3.org/2002/07/owl#sameAs> <http://localhost:3030/culturalworks/ol/author/OL1105435A> .
+<http://localhost:3030/culturalworks/person/nm0401076> <http://www.w3.org/2002/07/owl#sameAs> <http://localhost:3030/culturalworks/ol/author/OL107571A> .
+<http://localhost:3030/culturalworks/person/nm0629933> <http://www.w3.org/2002/07/owl#sameAs> <http://localhost:3030/culturalworks/ol/author/OL682312A> .
+<http://localhost:3030/culturalworks/person/nm1279581> <http://www.w3.org/2002/07/owl#sameAs> <http://localhost:3030/culturalworks/ol/author/OL42596A> .

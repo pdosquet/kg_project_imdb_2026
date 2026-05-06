@@ -45,7 +45,7 @@ import re
 BASE = "http://localhost:3030/culturalworks/"
 
 BOOK_NS   = "http://localhost:3030/culturalworks/book#"
-WIKIDATA  = "https://www.wikidata.org/entity/"
+WIKIDATA  = "http://www.wikidata.org/entity/"
 LEXVO_639_1 = "http://lexvo.org/id/iso639-1/"
 LEXVO_639_3 = "http://lexvo.org/id/iso639-3/"
 

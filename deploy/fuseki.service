@@ -1,0 +1,16 @@
+[Unit]
+Description=Apache Jena Fuseki (culturalworks)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=pdosquet
+Group=pdosquet
+WorkingDirectory=/home/pdosquet/projects/M3/kg_project_imdb_2026
+ExecStart=/home/pdosquet/projects/M3/kg_project_imdb_2026/apache-jena-fuseki-6.0.0/fuseki-server --mem --port 3030 /culturalworks
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

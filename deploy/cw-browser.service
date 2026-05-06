@@ -1,0 +1,17 @@
+[Unit]
+Description=Cultural Works Browser (Vite dev server)
+After=fuseki-load.service network-online.target
+Wants=fuseki-load.service network-online.target
+
+[Service]
+Type=simple
+User=pdosquet
+Group=pdosquet
+WorkingDirectory=/home/pdosquet/projects/M3/kg_project_imdb_2026/web
+Environment=PATH=/usr/bin:/usr/local/bin
+ExecStart=/usr/bin/npm run dev
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

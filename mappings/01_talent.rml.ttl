@@ -17,7 +17,7 @@
     void:exampleResource :map_TalentMapping_000.
 :map_TalentMapping_000 rml:logicalSource :source_000.
 :source_000 a rml:LogicalSource;
-    rml:source "talent.csv";
+    rml:source "data/generated/talent.csv";
     rml:referenceFormulation ql:CSV.
 :map_TalentMapping_000 a rr:TriplesMap;
     rdfs:label "TalentMapping".

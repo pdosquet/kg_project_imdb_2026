@@ -1,0 +1,17 @@
+[Unit]
+Description=Load ontology + data into Fuseki culturalworks
+After=fuseki.service
+Requires=fuseki.service
+
+[Service]
+Type=oneshot
+User=pdosquet
+Group=pdosquet
+WorkingDirectory=/home/pdosquet/projects/M3/kg_project_imdb_2026
+# Wait for Fuseki to actually accept requests, then load.
+ExecStartPre=/bin/bash -c 'for i in $(seq 1 30); do curl -fsS http://localhost:3030/$/ping >/dev/null 2>&1 && exit 0; sleep 1; done; exit 1'
+ExecStart=/bin/bash /home/pdosquet/projects/M3/kg_project_imdb_2026/load_graphs.sh
+RemainAfterExit=true
+
+[Install]
+WantedBy=multi-user.target

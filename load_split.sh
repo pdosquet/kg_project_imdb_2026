@@ -1,16 +1,16 @@
 #!/bin/bash
 # load_split.sh
 # Loads triples into the two-endpoint setup.
-# - IMDB graph   → 3030/imdb
-# - Book graph   → 3031/books
+# - IMDB graph   → 3031/imdb
+# - Book graph   → 3032/books
 # - The owl:sameAs links go into the IMDB endpoint because they are about
 #   IMDB persons; without them the IMDB endpoint cannot bridge to the book
 #   endpoint.
 # - The shared cw: ontology is loaded into BOTH endpoints because both
 #   need to resolve cw: predicates and class IRIs locally.
 
-IMDB_ENDPOINT="http://localhost:3030/imdb/data?default"
-BOOK_ENDPOINT="http://localhost:3031/books/data?default"
+IMDB_ENDPOINT="http://localhost:3031/imdb/data?default"
+BOOK_ENDPOINT="http://localhost:3032/books/data?default"
 
 post_ttl()  { curl -s -o /dev/null -w "%{http_code}" -X POST -H "Content-Type: text/turtle"           --data-binary @"$2" "$1"; }
 post_nt()   { curl -s -o /dev/null -w "%{http_code}" -X POST -H "Content-Type: application/n-triples" --data-binary @"$2" "$1"; }
@@ -48,7 +48,7 @@ echo "HTTP $(post_nt "$BOOK_ENDPOINT" output/split/10_book_only.nt)"
 
 echo ""
 echo "=== Verification ==="
-COUNT_IMDB=$(curl -s -G "http://localhost:3030/imdb/sparql"  --data-urlencode "query=SELECT (COUNT(*) AS ?n) WHERE { ?s ?p ?o }" -H "Accept: text/csv" | tail -1)
-COUNT_BOOK=$(curl -s -G "http://localhost:3031/books/sparql" --data-urlencode "query=SELECT (COUNT(*) AS ?n) WHERE { ?s ?p ?o }" -H "Accept: text/csv" | tail -1)
+COUNT_IMDB=$(curl -s -G "http://localhost:3031/imdb/sparql"  --data-urlencode "query=SELECT (COUNT(*) AS ?n) WHERE { ?s ?p ?o }" -H "Accept: text/csv" | tail -1)
+COUNT_BOOK=$(curl -s -G "http://localhost:3032/books/sparql" --data-urlencode "query=SELECT (COUNT(*) AS ?n) WHERE { ?s ?p ?o }" -H "Accept: text/csv" | tail -1)
 echo "IMDB endpoint triples:  $COUNT_IMDB"
 echo "Book endpoint triples:  $COUNT_BOOK"

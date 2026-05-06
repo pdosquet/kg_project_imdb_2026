@@ -88,7 +88,7 @@
 :rules_000 void:exampleResource :map_AlternativeTitleMapping_000.
 :map_AlternativeTitleMapping_000 rml:logicalSource :source_005.
 :source_005 a rml:LogicalSource;
-    rml:source "data/title_aka.csv";
+    rml:source "data/generated/title_aka.csv";
     rml:referenceFormulation ql:CSV.
 :map_AlternativeTitleMapping_000 a rr:TriplesMap;
     rdfs:label "AlternativeTitleMapping".

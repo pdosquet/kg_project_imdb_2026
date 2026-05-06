@@ -122,25 +122,25 @@ cw:Creator rdf:type owl:Class ;
     rdfs:label "Creator"@en ;
     rdfs:comment "A creator is a role held by a person who is the primary intellectual author or originator of a creative work or of the source material from which a work is derived."@en .
 
-cw:Author rdf:type owl:Class ;
+cw:Author rdf:type owl:Class , owl:NamedIndividual , cw:Role ;
     rdfs:subClassOf cw:Creator ;
     rdfs:label "Author"@en ;
-    rdfs:comment "An author is a person who wrote the original literary work from which a creative work is adapted."@en .
+    rdfs:comment "An author is a person who wrote the original literary work from which a creative work is adapted. Punned as a NamedIndividual of cw:Role so that persons may be assigned the profession 'Author' via cw:hasProfession."@en .
 
-cw:Screenwriter rdf:type owl:Class ;
+cw:Screenwriter rdf:type owl:Class , owl:NamedIndividual , cw:Role ;
     rdfs:subClassOf cw:Creator ;
     rdfs:label "Screenwriter"@en ;
-    rdfs:comment "A screenwriter is a person who writes the script for a work intended for screen, stage, or broadcast. Placed in the shared namespace because screenwriting is not specific to film: theatre, radio, and podcasting all employ screenwriters. Domain-specific ontologies subclass this to scope it to a particular medium."@en .
+    rdfs:comment "A screenwriter is a person who writes the script for a work intended for screen, stage, or broadcast. Placed in the shared namespace because screenwriting is not specific to film: theatre, radio, and podcasting all employ screenwriters. Domain-specific ontologies subclass this to scope it to a particular medium. Punned as a NamedIndividual of cw:Role for direct use in cw:hasProfession."@en .
 
-cw:SourceMaterial rdf:type owl:Class ;
+cw:SourceMaterial rdf:type owl:Class , owl:NamedIndividual , cw:Role ;
     rdfs:subClassOf cw:Author ;
     rdfs:label "Source Material Role"@en ;
-    rdfs:comment "A source material role is held by a person who provided the work from which a derived creative work was adapted, without writing the screenplay or script directly. Placed in the shared namespace because source material credits appear in all cultural domains: theatre adaptations credit novelists, operas credit librettists, films credit the authors of their source novels."@en .
+    rdfs:comment "A source material role is held by a person who provided the work from which a derived creative work was adapted, without writing the screenplay or script directly. Placed in the shared namespace because source material credits appear in all cultural domains: theatre adaptations credit novelists, operas credit librettists, films credit the authors of their source novels. Punned as a NamedIndividual of cw:Role for direct use in cw:hasProfession."@en .
 
-cw:Translator rdf:type owl:Class ;
+cw:Translator rdf:type owl:Class , owl:NamedIndividual , cw:Role ;
     rdfs:subClassOf cw:Role ;
     rdfs:label "Translator"@en ;
-    rdfs:comment "A translator is a person who translates a creative work or its title from one language into another."@en .
+    rdfs:comment "A translator is a person who translates a creative work or its title from one language into another. Punned as a NamedIndividual of cw:Role for direct use in cw:hasProfession."@en .
 
 # --- Lookup classes ---
 
@@ -288,6 +288,7 @@ cw:appearsIn rdf:type owl:ObjectProperty ;
 # =============================================================================
 
 cw:primaryTitle rdf:type owl:DatatypeProperty ;
+    rdfs:subPropertyOf rdfs:label ;
     rdfs:domain cw:CreativeWork ;
     rdfs:range xsd:string ;
     rdfs:label "primary title"@en ;
@@ -312,9 +313,11 @@ cw:endYear rdf:type owl:DatatypeProperty ;
     rdfs:comment "The year in which the series concluded. Absent for ongoing series. Scoped to WorkSeries by domain declaration: a reasoner infers from the presence of this property that the subject is a WorkSeries."@en .
 
 cw:name rdf:type owl:DatatypeProperty ;
+    rdfs:subPropertyOf rdfs:label ;
+    rdfs:domain [ a owl:Class ; owl:unionOf ( cw:RealPerson cw:FictionalCharacter ) ] ;
     rdfs:range xsd:string ;
     rdfs:label "name"@en ;
-    rdfs:comment "The full name of a person or character as commonly known or credited. No domain restriction: applies to both RealPerson and FictionalCharacter."@en .
+    rdfs:comment "The full name of a person or character as commonly known or credited. Applies to both RealPerson and FictionalCharacter via a union domain."@en .
 
 cw:birthYear rdf:type owl:DatatypeProperty ;
     rdfs:domain cw:RealPerson ;

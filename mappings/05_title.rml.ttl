@@ -39,7 +39,7 @@
 :rules_000 void:exampleResource :map_TitleMapping_000.
 :map_TitleMapping_000 rml:logicalSource :source_002.
 :source_002 a rml:LogicalSource;
-    rml:source "data/title.csv";
+    rml:source "data/generated/title.csv";
     rml:referenceFormulation ql:CSV.
 :map_TitleMapping_000 a rr:TriplesMap;
     rdfs:label "TitleMapping".

@@ -13,7 +13,7 @@ mappings:
   # -------------------------------------------------------
 
   GenreLookup:
-    sources: [['data/genre_lookup.csv~csv']]
+    sources: [['data/seeded/genre_lookup.csv~csv']]
     s: $(genre_iri)
 
   TitleGenreMapping:

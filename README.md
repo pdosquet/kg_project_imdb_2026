@@ -33,7 +33,7 @@ unzip apache-jena-fuseki-6.0.0.zip
 chmod +x apache-jena-fuseki-6.0.0/fuseki-server
 ```
 
-You also need `rmlmapper.jar` in the project root to regenerate triples
+You also need `rmlmapper.jar` in the project root to regenerate triples (rmlmapper-8.1.0-r380-all)
 from the RML mappings (download from the RMLio releases page; gitignored).
 
 ### 3. Python dependencies
