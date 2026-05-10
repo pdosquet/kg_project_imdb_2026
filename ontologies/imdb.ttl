@@ -1,6 +1,6 @@
-@prefix cw:    <http://localhost:3030/culturalworks/ontology#> .
-@prefix film:  <http://localhost:3030/culturalworks/film#> .
-@prefix imdb:  <http://localhost:3030/culturalworks/imdb#> .
+@prefix cw:    <https://example.org/culturalworks/ontology#> .
+@prefix film:  <https://example.org/culturalworks/film#> .
+@prefix imdb:  <https://example.org/culturalworks/imdb#> .
 @prefix owl:   <http://www.w3.org/2002/07/owl#> .
 @prefix rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
@@ -11,9 +11,9 @@
 # Ontology declaration
 # =============================================================================
 
-<http://localhost:3030/culturalworks/imdb> rdf:type owl:Ontology ;
-    owl:imports <http://localhost:3030/culturalworks/ontology> ,
-                <http://localhost:3030/culturalworks/film> ;
+<https://example.org/culturalworks/imdb> rdf:type owl:Ontology ;
+    owl:imports <https://example.org/culturalworks/ontology> ,
+                <https://example.org/culturalworks/film> ;
     dc:title "IMDB Extension Ontology"@en ;
     dc:description """The third tier of a three-tier cultural works ontology.
 Extends cw: and film: with concepts specific to IMDB as a data source.
@@ -59,9 +59,10 @@ imdb:ImdbDisplay rdf:type owl:NamedIndividual , cw:TitleTypeCategory ;
 # category/job mechanism would not need this individual.
 # =============================================================================
 
-imdb:Writer rdf:type owl:NamedIndividual , film:Screenwriter ;
+imdb:Writer rdf:type owl:NamedIndividual , film:FilmRole ;
+    cw:broaderRole film:Screenwriter ;
     rdfs:label "Writer"@en ;
-    rdfs:comment "A generic writing credit in the IMDB principal credits system. Used when category_id=9 appears with a null job value, providing no more specific writing role. This is an IMDB data model artifact: more specific writing roles are represented by film:Screenwriter individuals when the job field is populated."@en .
+    rdfs:comment "A generic writing credit in the IMDB principal credits system. Used when category_id=9 appears with a null job value, providing no more specific writing role. This is an IMDB data model artifact: more specific writing roles (linked to film:Screenwriter via cw:broaderRole) are used when the job field is populated."@en .
 
 # =============================================================================
 # Principal Credit Role AllDifferent

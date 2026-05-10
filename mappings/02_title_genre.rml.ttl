@@ -10,7 +10,7 @@
 @prefix rml: <http://semweb.mmlab.be/ns/rml#>.
 @prefix ql: <http://semweb.mmlab.be/ns/ql#>.
 @prefix : <http://mapping.example.com/>.
-@prefix cw: <http://localhost:3030/culturalworks/ontology#>.
+@prefix cw: <https://example.org/culturalworks/ontology#>.
 
 :rules_000 a void:Dataset;
     void:exampleResource :map_GenreLookup_000.
@@ -32,7 +32,7 @@
     rdfs:label "TitleGenreMapping".
 :s_001 a rr:SubjectMap.
 :map_TitleGenreMapping_000 rr:subjectMap :s_001.
-:s_001 rr:template "http://localhost:3030/culturalworks/title/{title_id}".
+:s_001 rr:template "https://example.org/culturalworks/title/{title_id}".
 :pom_000 a rr:PredicateObjectMap.
 :map_TitleGenreMapping_000 rr:predicateObjectMap :pom_000.
 :pm_000 a rr:PredicateMap.

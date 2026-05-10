@@ -1,7 +1,7 @@
 prefixes:
-  cw: http://localhost:3030/culturalworks/ontology#
-  film: http://localhost:3030/culturalworks/film#
-  imdb: http://localhost:3030/culturalworks/imdb#
+  cw: https://example.org/culturalworks/ontology#
+  film: https://example.org/culturalworks/film#
+  imdb: https://example.org/culturalworks/imdb#
   rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns#
 
 mappings:
@@ -21,7 +21,7 @@ mappings:
 
   TalentRoleMapping:
     sources: [['data/talent_role.csv~csv']]
-    s: http://localhost:3030/culturalworks/person/$(talent_id)
+    s: https://example.org/culturalworks/person/$(talent_id)
     po:
       - p: cw:hasProfession
         o:

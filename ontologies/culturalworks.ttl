@@ -1,4 +1,4 @@
-@prefix cw:    <http://localhost:3030/culturalworks/ontology#> .
+@prefix cw:    <https://example.org/culturalworks/ontology#> .
 @prefix owl:   <http://www.w3.org/2002/07/owl#> .
 @prefix rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
@@ -9,7 +9,7 @@
 # Ontology declaration
 # =============================================================================
 
-<http://localhost:3030/culturalworks/ontology> rdf:type owl:Ontology ;
+<https://example.org/culturalworks/ontology> rdf:type owl:Ontology ;
     dc:title "Cultural Works Ontology"@en ;
     dc:description """A shared ontology for describing cultural works, their
 contributors, and their titles. Serves two complementary purposes:
@@ -111,36 +111,36 @@ cw:Contribution rdfs:subClassOf
         owl:onProperty cw:hasRole ;
         owl:maxCardinality "1"^^xsd:nonNegativeInteger ] .
 
-# --- Role subclasses ---
-# Not declared disjoint: cw:Screenwriter inherits from cw:Creator, and
-# imdb:Screenwriter (in the IMDB extension) inherits from both cw:Screenwriter
-# and imdb:FilmRole. Disjointness between Role subclasses would make
-# imdb:Screenwriter inconsistent.
+# --- Role individuals ---
+# All roles below are pure named individuals of cw:Role (no OWL class punning).
+# The role hierarchy is expressed via cw:broaderRole between individuals
+# (e.g., cw:SourceMaterial cw:broaderRole cw:Author), which is transitive,
+# so nested narrower-than relationships are inferred. Domain-specific role
+# vocabularies (film:, imdb:, book:) follow the same pattern: their roles
+# are typed as film:FilmRole etc. and link upward via cw:broaderRole.
 
-cw:Creator rdf:type owl:Class ;
-    rdfs:subClassOf cw:Role ;
+cw:Creator rdf:type owl:NamedIndividual , cw:Role ;
     rdfs:label "Creator"@en ;
     rdfs:comment "A creator is a role held by a person who is the primary intellectual author or originator of a creative work or of the source material from which a work is derived."@en .
 
-cw:Author rdf:type owl:Class , owl:NamedIndividual , cw:Role ;
-    rdfs:subClassOf cw:Creator ;
+cw:Author rdf:type owl:NamedIndividual , cw:Role ;
+    cw:broaderRole cw:Creator ;
     rdfs:label "Author"@en ;
-    rdfs:comment "An author is a person who wrote the original literary work from which a creative work is adapted. Punned as a NamedIndividual of cw:Role so that persons may be assigned the profession 'Author' via cw:hasProfession."@en .
+    rdfs:comment "An author is a person who wrote the original literary work from which a creative work is adapted."@en .
 
-cw:Screenwriter rdf:type owl:Class , owl:NamedIndividual , cw:Role ;
-    rdfs:subClassOf cw:Creator ;
+cw:Screenwriter rdf:type owl:NamedIndividual , cw:Role ;
+    cw:broaderRole cw:Creator ;
     rdfs:label "Screenwriter"@en ;
-    rdfs:comment "A screenwriter is a person who writes the script for a work intended for screen, stage, or broadcast. Placed in the shared namespace because screenwriting is not specific to film: theatre, radio, and podcasting all employ screenwriters. Domain-specific ontologies subclass this to scope it to a particular medium. Punned as a NamedIndividual of cw:Role for direct use in cw:hasProfession."@en .
+    rdfs:comment "A screenwriter is a person who writes the script for a work intended for screen, stage, or broadcast. Placed in the shared namespace because screenwriting is not specific to film: theatre, radio, and podcasting all employ screenwriters."@en .
 
-cw:SourceMaterial rdf:type owl:Class , owl:NamedIndividual , cw:Role ;
-    rdfs:subClassOf cw:Author ;
+cw:SourceMaterial rdf:type owl:NamedIndividual , cw:Role ;
+    cw:broaderRole cw:Author ;
     rdfs:label "Source Material Role"@en ;
-    rdfs:comment "A source material role is held by a person who provided the work from which a derived creative work was adapted, without writing the screenplay or script directly. Placed in the shared namespace because source material credits appear in all cultural domains: theatre adaptations credit novelists, operas credit librettists, films credit the authors of their source novels. Punned as a NamedIndividual of cw:Role for direct use in cw:hasProfession."@en .
+    rdfs:comment "A source material role is held by a person who provided the work from which a derived creative work was adapted, without writing the screenplay or script directly. Placed in the shared namespace because source material credits appear in all cultural domains: theatre adaptations credit novelists, operas credit librettists, films credit the authors of their source novels."@en .
 
-cw:Translator rdf:type owl:Class , owl:NamedIndividual , cw:Role ;
-    rdfs:subClassOf cw:Role ;
+cw:Translator rdf:type owl:NamedIndividual , cw:Role ;
     rdfs:label "Translator"@en ;
-    rdfs:comment "A translator is a person who translates a creative work or its title from one language into another. Punned as a NamedIndividual of cw:Role for direct use in cw:hasProfession."@en .
+    rdfs:comment "A translator is a person who translates a creative work or its title from one language into another."@en .
 
 # --- Lookup classes ---
 
@@ -187,6 +187,12 @@ cw:hasRole rdf:type owl:ObjectProperty ;
     rdfs:range cw:Role ;
     rdfs:label "has role"@en ;
     rdfs:comment "The role in which the person contributed to the work. The maxCardinality-1 axiom asserts that at most one role is associated with a given Contribution."@en .
+
+cw:broaderRole rdf:type owl:ObjectProperty , owl:TransitiveProperty ;
+    rdfs:domain cw:Role ;
+    rdfs:range cw:Role ;
+    rdfs:label "broader role"@en ;
+    rdfs:comment "Indicates that the subject role is a more specific kind of the object role. Transitive: cw:NovelAuthor cw:broaderRole cw:SourceMaterial and cw:SourceMaterial cw:broaderRole cw:Author entail cw:NovelAuthor cw:broaderRole cw:Author. Used to express the role hierarchy as relations between named individuals, replacing the OWL class subsumption that would otherwise require punning role IRIs as both classes and individuals."@en .
 
 # --- Work hierarchy properties ---
 
@@ -523,19 +529,23 @@ cw:LiteralTitle rdf:type owl:NamedIndividual , cw:TitleTypeCategory ;
 # 'libretto', 'story', 'idea'.
 # =============================================================================
 
-cw:NovelAuthor rdf:type owl:NamedIndividual , cw:SourceMaterial ;
+cw:NovelAuthor rdf:type owl:NamedIndividual , cw:Role ;
+    cw:broaderRole cw:SourceMaterial ;
     rdfs:label "Novel Author"@en ;
     rdfs:comment "A person credited for writing the novel on which a derived work is based. Corresponds to IMDB job values 'novel' and 'based on the novel by'."@en .
 
-cw:LibrettoAuthor rdf:type owl:NamedIndividual , cw:SourceMaterial ;
+cw:LibrettoAuthor rdf:type owl:NamedIndividual , cw:Role ;
+    cw:broaderRole cw:SourceMaterial ;
     rdfs:label "Libretto Author"@en ;
     rdfs:comment "A person credited for writing the libretto on which a derived work is based. A libretto is the text of an opera, oratorio, or musical."@en .
 
-cw:StoryAuthor rdf:type owl:NamedIndividual , cw:SourceMaterial ;
+cw:StoryAuthor rdf:type owl:NamedIndividual , cw:Role ;
+    cw:broaderRole cw:SourceMaterial ;
     rdfs:label "Story Author"@en ;
     rdfs:comment "A person credited for contributing the original story concept or treatment from which a work was developed, without writing the full script."@en .
 
-cw:IdeaAuthor rdf:type owl:NamedIndividual , cw:SourceMaterial ;
+cw:IdeaAuthor rdf:type owl:NamedIndividual , cw:Role ;
+    cw:broaderRole cw:SourceMaterial ;
     rdfs:label "Idea Author"@en ;
     rdfs:comment "A person credited for the original concept or idea from which a work was developed."@en .
 

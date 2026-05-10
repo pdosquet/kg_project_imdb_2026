@@ -1,33 +1,49 @@
 prefixes:
-  cw: http://localhost:3030/culturalworks/ontology#
+  cw: https://example.org/culturalworks/ontology#
   owl: http://www.w3.org/2002/07/owl#
   rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns#
+  grel: http://users.ugent.be/~bjdmeest/function/grel.ttl#
+  idlab-fn: https://w3id.org/imec/idlab/function#
 
 mappings:
 
-  # -------------------------------------------------------
-  # LanguageMapping: mints one cw:Language individual per
-  # ISO 639 language code that actually appears in title_aka.
-  # Only 15 of the 101 codes in language.csv appear in the
-  # data — minting all 101 would create unconnected individuals
-  # with no link to any AKA in the graph.
-  #
-  # language.csv is not used directly: its language_name
-  # column is 100% null (verified in M1), so the code alone
-  # is the only available information.
-  #
-  # owl:sameAs links to Lexvo provide human-readable labels
-  # and broader language metadata through federation.
-  # Lexvo uses different paths for ISO 639-1 (2-letter codes)
-  # and ISO 639-3 (3-letter codes). The correct path per code
-  # is pre-computed by preprocess.py into the lexvo_iri column.
-  # 14 codes are ISO 639-1; cmn (Mandarin) is ISO 639-3.
-  # -------------------------------------------------------
-
+  # Mints cw:Language individuals for ISO 639 codes that actually appear in title_aka.
+  # Source is the raw CSV; \N rows skipped via condition.
+  # Lexvo path is derived inline: ISO 639-1 (2-letter) vs ISO 639-3 (3-letter).
+  # Run with `-d` to dedup the many-rows-per-code emissions.
   LanguageMapping:
-    sources: [['data/generated/language_lookup.csv~csv']]
-    s: $(language_iri)
+    sources: [['data/title_aka.csv~csv']]
+    s: https://example.org/culturalworks/language/$(language)
+    condition:
+      function: idlab-fn:notEqual
+      parameters:
+        - [grel:valueParameter, $(language)]
+        - [grel:valueParameter2, "\\N"]
     po:
       - [a, cw:Language~iri]
       - p: owl:sameAs
-        o: $(lexvo_iri)~iri
+        o: http://lexvo.org/id/iso639-1/$(language)~iri
+        condition:
+          function: idlab-fn:equal
+          parameters:
+            - parameter: grel:valueParameter
+              value:
+                function: grel:string_substring
+                parameters:
+                  - [grel:valueParameter, $(language)]
+                  - [grel:param_int_i_from, "0"]
+                  - [grel:param_int_i_opt_to, "2"]
+            - [grel:valueParameter2, $(language)]
+      - p: owl:sameAs
+        o: http://lexvo.org/id/iso639-3/$(language)~iri
+        condition:
+          function: idlab-fn:notEqual
+          parameters:
+            - parameter: grel:valueParameter
+              value:
+                function: grel:string_substring
+                parameters:
+                  - [grel:valueParameter, $(language)]
+                  - [grel:param_int_i_from, "0"]
+                  - [grel:param_int_i_opt_to, "2"]
+            - [grel:valueParameter2, $(language)]

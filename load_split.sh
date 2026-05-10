@@ -29,7 +29,7 @@ done
 # IMDB side so the IMDB endpoint knows it can bridge to the book endpoint.
 echo "owl:sameAs bridge triples..."
 mkdir -p output/split
-grep "<http://localhost:3030/culturalworks/person/" output/10_book.nt > output/split/10_sameas_bridge.nt
+grep "<https://example.org/culturalworks/person/" output/10_book.nt > output/split/10_sameas_bridge.nt
 echo -n "  output/split/10_sameas_bridge.nt ... "
 echo "HTTP $(post_nt "$IMDB_ENDPOINT" output/split/10_sameas_bridge.nt)"
 
@@ -42,7 +42,7 @@ done
 echo "Data (books, authors, contributions)..."
 # Strip the owl:sameAs bridge triples and Wikidata sameAs from the book
 # graph; what remains is books, authors, languages, and contributions.
-grep -v "<http://localhost:3030/culturalworks/person/" output/10_book.nt > output/split/10_book_only.nt
+grep -v "<https://example.org/culturalworks/person/" output/10_book.nt > output/split/10_book_only.nt
 echo -n "  output/split/10_book_only.nt ... "
 echo "HTTP $(post_nt "$BOOK_ENDPOINT" output/split/10_book_only.nt)"
 

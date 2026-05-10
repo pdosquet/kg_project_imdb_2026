@@ -1,29 +1,34 @@
 prefixes:
-  cw: http://localhost:3030/culturalworks/ontology#
+  cw: https://example.org/culturalworks/ontology#
   xsd: http://www.w3.org/2001/XMLSchema#
   rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns#
   rdfs: http://www.w3.org/2000/01/rdf-schema#
+  grel: http://users.ugent.be/~bjdmeest/function/grel.ttl#
+  idlab-fn: https://w3id.org/imec/idlab/function#
 
 mappings:
   TalentMapping:
     sources:
-      - ['data/generated/talent.csv~csv']
-    s: http://localhost:3030/culturalworks/person/$(talent_id)
+      - ['data/talent.csv~csv']
+    s: https://example.org/culturalworks/person/$(talent_id)
     po:
-      # Type assertion
-      - [rdf:type, cw:RealPerson]
-      
-      # Name (always present, mandatory in data)
+      - [a, cw:RealPerson~iri]
       - [cw:name, $(talent_name)]
-      
-      # Birth year (optional: skip if null, type as xsd:gYear)
+
       - p: cw:birthYear
         o: $(birth_year)
-        condition: isNotNull($(birth_year))
         datatype: xsd:gYear
-      
-      # Death year (optional: skip if null, type as xsd:gYear)
+        condition:
+          function: idlab-fn:notEqual
+          parameters:
+            - [grel:valueParameter, $(birth_year)]
+            - [grel:valueParameter2, "\\N"]
+
       - p: cw:deathYear
         o: $(death_year)
-        condition: isNotNull($(death_year))
         datatype: xsd:gYear
+        condition:
+          function: idlab-fn:notEqual
+          parameters:
+            - [grel:valueParameter, $(death_year)]
+            - [grel:valueParameter2, "\\N"]

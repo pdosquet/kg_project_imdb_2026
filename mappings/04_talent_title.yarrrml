@@ -1,5 +1,5 @@
 prefixes:
-  cw: http://localhost:3030/culturalworks/ontology#
+  cw: https://example.org/culturalworks/ontology#
   rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns#
 
 mappings:
@@ -15,7 +15,7 @@ mappings:
 
   TalentTitleMapping:
     sources: [['data/talent_title.csv~csv']]
-    s: http://localhost:3030/culturalworks/person/$(talent_id)
+    s: https://example.org/culturalworks/person/$(talent_id)
     po:
       - p: cw:associatedWith
-        o: http://localhost:3030/culturalworks/title/$(title_id)~iri
+        o: https://example.org/culturalworks/title/$(title_id)~iri

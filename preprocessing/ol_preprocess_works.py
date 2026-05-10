@@ -42,9 +42,9 @@ import csv
 import os
 import re
 
-BASE = "http://localhost:3030/culturalworks/"
+BASE = "https://example.org/culturalworks/"
 
-BOOK_NS   = "http://localhost:3030/culturalworks/book#"
+BOOK_NS   = "https://example.org/culturalworks/book#"
 WIKIDATA  = "http://www.wikidata.org/entity/"
 LEXVO_639_1 = "http://lexvo.org/id/iso639-1/"
 LEXVO_639_3 = "http://lexvo.org/id/iso639-3/"

@@ -8,7 +8,7 @@ export const ROOTS: string[] = (env.VITE_ROOTS ?? "")
   .filter(Boolean);
 
 if (ROOTS.length === 0) {
-  ROOTS.push("http://localhost:3030/culturalworks/ontology#CreativeWork");
+  ROOTS.push("https://example.org/culturalworks/ontology#CreativeWork");
 }
 
 export const APP_TITLE: string = env.VITE_APP_TITLE ?? "Cultural Works Browser";

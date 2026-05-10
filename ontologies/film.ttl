@@ -1,5 +1,5 @@
-@prefix cw:    <http://localhost:3030/culturalworks/ontology#> .
-@prefix film:  <http://localhost:3030/culturalworks/film#> .
+@prefix cw:    <https://example.org/culturalworks/ontology#> .
+@prefix film:  <https://example.org/culturalworks/film#> .
 @prefix owl:   <http://www.w3.org/2002/07/owl#> .
 @prefix rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
@@ -10,8 +10,8 @@
 # Ontology declaration
 # =============================================================================
 
-<http://localhost:3030/culturalworks/film> rdf:type owl:Ontology ;
-    owl:imports <http://localhost:3030/culturalworks/ontology> ;
+<https://example.org/culturalworks/film> rdf:type owl:Ontology ;
+    owl:imports <https://example.org/culturalworks/ontology> ;
     dc:title "Film and Television Domain Ontology"@en ;
     dc:description """The second tier of a three-tier cultural works ontology.
 Extends the shared cw: vocabulary with classes, properties, and individuals
@@ -38,10 +38,10 @@ film:FilmRole rdf:type owl:Class ;
     rdfs:label "Film Role"@en ;
     rdfs:comment "A role specific to film and television production. Named individuals of this class cover the film and television credit vocabulary and career profession vocabulary. Generic roles that exist across all cultural domains (Actor, Director, Producer, Composer, Editor, Cinematographer) are defined in cw:Role; film:FilmRole covers roles that are specific to the audiovisual production context."@en .
 
-film:Screenwriter rdf:type owl:Class ;
-    rdfs:subClassOf cw:Screenwriter , film:FilmRole ;
+film:Screenwriter rdf:type owl:NamedIndividual , film:FilmRole ;
+    cw:broaderRole cw:Screenwriter ;
     rdfs:label "Film Screenwriter"@en ;
-    rdfs:comment "A screenwriter working specifically in the film and television domain. Inherits from cw:Screenwriter (the domain-agnostic creative role) and film:FilmRole (the film production context). Any film or television dataset needs this class; it is therefore placed in film: rather than in a dataset-specific namespace."@en .
+    rdfs:comment "A screenwriter working specifically in the film and television domain. Linked via cw:broaderRole to cw:Screenwriter (the domain-agnostic creative role) and typed by film:FilmRole (the film production context). Any film or television dataset needs this individual; it is therefore placed in film: rather than in a dataset-specific namespace."@en .
 
 film:FilmContribution rdf:type owl:Class ;
     rdfs:subClassOf cw:Contribution ;
@@ -138,19 +138,23 @@ film:Cinematographer rdf:type owl:NamedIndividual , film:FilmRole ;
 # dataset would use these; they are therefore placed in film: rather than imdb:.
 # =============================================================================
 
-film:StoryEditor rdf:type owl:NamedIndividual , film:Screenwriter ;
+film:StoryEditor rdf:type owl:NamedIndividual , film:FilmRole ;
+    cw:broaderRole film:Screenwriter ;
     rdfs:label "Story Editor"@en ;
     rdfs:comment "A person responsible for overseeing and developing the story content of a television production."@en .
 
-film:HeadWriter rdf:type owl:NamedIndividual , film:Screenwriter ;
+film:HeadWriter rdf:type owl:NamedIndividual , film:FilmRole ;
+    cw:broaderRole film:Screenwriter ;
     rdfs:label "Head Writer"@en ;
     rdfs:comment "The lead writer on a television series, responsible for the overall narrative direction."@en .
 
-film:Teleplay rdf:type owl:NamedIndividual , film:Screenwriter ;
+film:Teleplay rdf:type owl:NamedIndividual , film:FilmRole ;
+    cw:broaderRole film:Screenwriter ;
     rdfs:label "Teleplay Writer"@en ;
     rdfs:comment "A person who writes a teleplay, adapting source material into a script for television."@en .
 
-film:SeriesCreator rdf:type owl:NamedIndividual , film:Screenwriter ;
+film:SeriesCreator rdf:type owl:NamedIndividual , film:FilmRole ;
+    cw:broaderRole film:Screenwriter ;
     rdfs:label "Series Creator"@en ;
     rdfs:comment "The person who originated the concept and creative vision for a television series."@en .
 

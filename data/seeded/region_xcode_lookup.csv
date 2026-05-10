@@ -1,4 +1,4 @@
 region_code,region_iri
-XEU,http://localhost:3030/culturalworks/imdb#RegionEurope
-XWG,http://localhost:3030/culturalworks/imdb#RegionFormerWestGermany
-XWW,http://localhost:3030/culturalworks/imdb#RegionWorldwide
+XEU,https://example.org/culturalworks/imdb#RegionEurope
+XWG,https://example.org/culturalworks/imdb#RegionFormerWestGermany
+XWW,https://example.org/culturalworks/imdb#RegionWorldwide

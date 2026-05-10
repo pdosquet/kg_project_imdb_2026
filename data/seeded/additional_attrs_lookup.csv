@@ -1,5 +1,5 @@
 additional_attrs,title_type_iri
-informal alternative title,http://localhost:3030/culturalworks/ontology#InformalTitle
-transliterated ISO-LATIN-1 title,http://localhost:3030/culturalworks/ontology#TransliteratedTitle
-literal title,http://localhost:3030/culturalworks/ontology#LiteralTitle
-Berlin film festival title,http://localhost:3030/culturalworks/film#BerlinFestivalTitle
+informal alternative title,https://example.org/culturalworks/ontology#InformalTitle
+transliterated ISO-LATIN-1 title,https://example.org/culturalworks/ontology#TransliteratedTitle
+literal title,https://example.org/culturalworks/ontology#LiteralTitle
+Berlin film festival title,https://example.org/culturalworks/film#BerlinFestivalTitle

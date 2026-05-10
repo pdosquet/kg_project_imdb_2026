@@ -157,9 +157,9 @@ def timed(measurements: Measurements):
 # ============================================================================
 
 SINGLE_QUERY = """
-PREFIX cw:   <http://localhost:3030/culturalworks/ontology#>
-PREFIX film: <http://localhost:3030/culturalworks/film#>
-PREFIX book: <http://localhost:3030/culturalworks/book#>
+PREFIX cw:   <https://example.org/culturalworks/ontology#>
+PREFIX film: <https://example.org/culturalworks/film#>
+PREFIX book: <https://example.org/culturalworks/book#>
 PREFIX owl:  <http://www.w3.org/2002/07/owl#>
 
 SELECT DISTINCT ?personName WHERE {
@@ -209,7 +209,7 @@ def run_naive_federation() -> Measurements:
         try:
             # Step 1: get name + sameAs bridges from IMDB endpoint
             res = imdb_sparql.query("""
-                PREFIX cw:  <http://localhost:3030/culturalworks/ontology#>
+                PREFIX cw:  <https://example.org/culturalworks/ontology#>
                 PREFIX owl: <http://www.w3.org/2002/07/owl#>
                 SELECT ?personName ?olP WHERE {
                   ?p cw:name ?personName ; owl:sameAs ?olP .
@@ -249,8 +249,8 @@ def run_optimised_federation() -> Measurements:
             # Step 1: from BOOK endpoint, get OL persons that have both
             # cw:RealPerson type AND a BookContribution AND a Wikidata sameAs
             res = book_sparql.query("""
-                PREFIX cw:  <http://localhost:3030/culturalworks/ontology#>
-                PREFIX book:<http://localhost:3030/culturalworks/book#>
+                PREFIX cw:  <https://example.org/culturalworks/ontology#>
+                PREFIX book:<https://example.org/culturalworks/book#>
                 PREFIX owl: <http://www.w3.org/2002/07/owl#>
                 SELECT DISTINCT ?olP ?wd WHERE {
                   ?olP a cw:RealPerson ; owl:sameAs ?wd .
@@ -268,8 +268,8 @@ def run_optimised_federation() -> Measurements:
             #         AND require a film contribution (matches single oracle)
             values_olp = "\n    ".join(f"<{iri}>" for iri in ol_to_wd)
             res2 = imdb_sparql.query(f"""
-                PREFIX cw:   <http://localhost:3030/culturalworks/ontology#>
-                PREFIX film: <http://localhost:3030/culturalworks/film#>
+                PREFIX cw:   <https://example.org/culturalworks/ontology#>
+                PREFIX film: <https://example.org/culturalworks/film#>
                 PREFIX owl:  <http://www.w3.org/2002/07/owl#>
                 SELECT DISTINCT ?personName ?olP WHERE {{
                   VALUES ?olP {{ {values_olp} }}
@@ -312,9 +312,9 @@ def run_optimised_federation() -> Measurements:
 # ============================================================================
 
 JENA_SERVICE_QUERY = """
-PREFIX cw:   <http://localhost:3030/culturalworks/ontology#>
-PREFIX film: <http://localhost:3030/culturalworks/film#>
-PREFIX book: <http://localhost:3030/culturalworks/book#>
+PREFIX cw:   <https://example.org/culturalworks/ontology#>
+PREFIX film: <https://example.org/culturalworks/film#>
+PREFIX book: <https://example.org/culturalworks/book#>
 PREFIX owl:  <http://www.w3.org/2002/07/owl#>
 PREFIX wdt:  <http://www.wikidata.org/prop/direct/>
 
@@ -395,8 +395,8 @@ def report(results: list, oracle_name: str = "single_endpoint"):
 # ============================================================================
 
 SINGLE_DOMAIN_QUERY = """
-PREFIX cw:   <http://localhost:3030/culturalworks/ontology#>
-PREFIX film: <http://localhost:3030/culturalworks/film#>
+PREFIX cw:   <https://example.org/culturalworks/ontology#>
+PREFIX film: <https://example.org/culturalworks/film#>
 
 SELECT ?personName (COUNT(?fc) AS ?credits) WHERE {
   ?p cw:name ?personName .
@@ -407,9 +407,9 @@ ORDER BY DESC(?credits) ?personName
 """
 
 FEDERATED_BLIND_QUERY = """
-PREFIX cw:   <http://localhost:3030/culturalworks/ontology#>
-PREFIX film: <http://localhost:3030/culturalworks/film#>
-PREFIX book: <http://localhost:3030/culturalworks/book#>
+PREFIX cw:   <https://example.org/culturalworks/ontology#>
+PREFIX film: <https://example.org/culturalworks/film#>
+PREFIX book: <https://example.org/culturalworks/book#>
 
 SELECT ?personName (COUNT(?fc) AS ?credits) WHERE {
   ?p cw:name ?personName .

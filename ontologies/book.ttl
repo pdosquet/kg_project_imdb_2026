@@ -1,5 +1,5 @@
-@prefix book:  <http://localhost:3030/culturalworks/book#> .
-@prefix cw:    <http://localhost:3030/culturalworks/ontology#> .
+@prefix book:  <https://example.org/culturalworks/book#> .
+@prefix cw:    <https://example.org/culturalworks/ontology#> .
 @prefix owl:   <http://www.w3.org/2002/07/owl#> .
 @prefix rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
@@ -10,8 +10,8 @@
 # Ontology declaration
 # =============================================================================
 
-<http://localhost:3030/culturalworks/book> rdf:type owl:Ontology ;
-    owl:imports <http://localhost:3030/culturalworks/ontology> ;
+<https://example.org/culturalworks/book> rdf:type owl:Ontology ;
+    owl:imports <https://example.org/culturalworks/ontology> ;
     dc:title "Book and Literary Domain Ontology"@en ;
     dc:description """The second tier of the three-tier cultural works ontology,
 parallel to film.ttl, for the literary domain. Extends the shared cw: vocabulary

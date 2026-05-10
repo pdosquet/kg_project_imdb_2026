@@ -1,85 +1,56 @@
-00:06:29 INFO  Fuseki          :: Apache Jena Fuseki 6.0.0
-00:06:29 INFO  Config          :: Fuseki Base = /home/pdosquet/projects/M3/kg_project_imdb_2026/run
-00:06:29 INFO  Config          :: Database: /imdb
-00:06:29 INFO  Config          :: UI Base: fuseki-server.jar
-00:06:29 INFO  Shiro           :: Shiro configuration: file:/home/pdosquet/projects/M3/kg_project_imdb_2026/run/shiro.ini
-00:06:29 INFO  Server          :: Path = /imdb
-00:06:29 INFO  Server          :: System
-00:06:29 INFO  Server          ::   Memory: 4.0 GiB
-00:06:29 INFO  Server          ::   PID:    217664
-00:06:29 INFO  Server          ::   Port:   http=3031
-00:06:29 INFO  Server          :: Start Fuseki
-00:06:32 INFO  Fuseki          :: [1] POST http://localhost:3031/imdb/update
-00:06:32 INFO  Fuseki          :: [1] 200 OK (28 ms)
-00:06:32 INFO  Fuseki          :: [2] POST http://localhost:3031/imdb/data?default
-00:06:33 INFO  Fuseki          :: [2] Body: Content-Length=34253, Content-Type=text/turtle, Charset=null => Turtle : Count=466 Triples=466 Quads=0
-00:06:33 INFO  Fuseki          :: [2] 200 OK (59 ms)
-00:06:33 INFO  Fuseki          :: [3] POST http://localhost:3031/imdb/data?default
-00:06:33 INFO  Fuseki          :: [3] Body: Content-Length=18845, Content-Type=text/turtle, Charset=null => Turtle : Count=249 Triples=249 Quads=0
-00:06:33 INFO  Fuseki          :: [3] 200 OK (19 ms)
-00:06:33 INFO  Fuseki          :: [4] POST http://localhost:3031/imdb/data?default
-00:06:33 INFO  Fuseki          :: [4] Body: Content-Length=7482, Content-Type=text/turtle, Charset=null => Turtle : Count=94 Triples=94 Quads=0
-00:06:33 INFO  Fuseki          :: [4] 200 OK (5 ms)
-00:06:33 INFO  Fuseki          :: [5] POST http://localhost:3031/imdb/data?default
-00:06:33 INFO  Fuseki          :: [5] Body: Content-Length=418549, Content-Type=application/n-triples, Charset=null => N-Triples : Count=2882 Triples=2882 Quads=0
-00:06:33 INFO  Fuseki          :: [5] 200 OK (62 ms)
-00:06:33 INFO  Fuseki          :: [6] POST http://localhost:3031/imdb/data?default
-00:06:33 INFO  Fuseki          :: [6] Body: Content-Length=25352, Content-Type=application/n-triples, Charset=null => N-Triples : Count=152 Triples=152 Quads=0
-00:06:33 INFO  Fuseki          :: [6] 200 OK (4 ms)
-00:06:33 INFO  Fuseki          :: [7] POST http://localhost:3031/imdb/data?default
-00:06:33 INFO  Fuseki          :: [7] Body: Content-Length=451047, Content-Type=application/n-triples, Charset=null => N-Triples : Count=2590 Triples=2590 Quads=0
-00:06:33 INFO  Fuseki          :: [7] 200 OK (38 ms)
-00:06:33 INFO  Fuseki          :: [8] POST http://localhost:3031/imdb/data?default
-00:06:33 INFO  Fuseki          :: [8] Body: Content-Length=158821, Content-Type=application/n-triples, Charset=null => N-Triples : Count=918 Triples=918 Quads=0
-00:06:33 INFO  Fuseki          :: [8] 200 OK (11 ms)
-00:06:33 INFO  Fuseki          :: [9] POST http://localhost:3031/imdb/data?default
-00:06:33 INFO  Fuseki          :: [9] Body: Content-Length=175867, Content-Type=application/n-triples, Charset=null => N-Triples : Count=1142 Triples=1142 Quads=0
-00:06:33 INFO  Fuseki          :: [9] 200 OK (15 ms)
-00:06:33 INFO  Fuseki          :: [10] POST http://localhost:3031/imdb/data?default
-00:06:33 INFO  Fuseki          :: [10] Body: Content-Length=630162, Content-Type=application/n-triples, Charset=null => N-Triples : Count=3497 Triples=3497 Quads=0
-00:06:33 INFO  Fuseki          :: [10] 200 OK (41 ms)
-00:06:33 INFO  Fuseki          :: [11] POST http://localhost:3031/imdb/data?default
-00:06:33 INFO  Fuseki          :: [11] Body: Content-Length=49711, Content-Type=application/n-triples, Charset=null => N-Triples : Count=295 Triples=295 Quads=0
-00:06:33 INFO  Fuseki          :: [11] 200 OK (3 ms)
-00:06:33 INFO  Fuseki          :: [12] POST http://localhost:3031/imdb/data?default
-00:06:33 INFO  Fuseki          :: [12] Body: Content-Length=225259, Content-Type=application/n-triples, Charset=null => N-Triples : Count=1410 Triples=1410 Quads=0
-00:06:33 INFO  Fuseki          :: [12] 200 OK (18 ms)
-00:06:33 INFO  Fuseki          :: [13] POST http://localhost:3031/imdb/data?default
-00:06:33 INFO  Fuseki          :: [13] Body: Content-Length=4248, Content-Type=application/n-triples, Charset=null => N-Triples : Count=30 Triples=30 Quads=0
-00:06:33 INFO  Fuseki          :: [13] 200 OK (1 ms)
-00:06:33 INFO  Fuseki          :: [14] POST http://localhost:3031/imdb/data?default
-00:06:33 INFO  Fuseki          :: [14] Body: Content-Length=770, Content-Type=application/n-triples, Charset=null => N-Triples : Count=5 Triples=5 Quads=0
-00:06:33 INFO  Fuseki          :: [14] 200 OK (1 ms)
-00:06:33 INFO  Fuseki          :: [15] GET http://localhost:3031/imdb/sparql?query=SELECT+%28COUNT%28%2a%29+AS+%3fn%29+WHERE+%7b+%3fs+%3fp+%3fo+%7d
-00:06:33 INFO  Fuseki          :: [15] Query = SELECT (COUNT(*) AS ?n) WHERE { ?s ?p ?o }
-00:06:33 INFO  Fuseki          :: [15] 200 OK (160 ms)
-00:06:33 INFO  Fuseki          :: [16] GET http://localhost:3031/imdb/sparql?query=%0A++++++++++++++++PREFIX+cw%3A++%3Chttp%3A//localhost%3A3030/culturalworks/ontology%23%3E%0A++++++++++++++++PREFIX+owl%3A+%3Chttp%3A//www.w3.org/2002/07/owl%23%3E%0A++++++++++++++++SELECT+%3FpersonName+%3FolP+WHERE+%7B%0A++++++++++++++++++%3Fp+cw%3Aname+%3FpersonName+%3B+owl%3AsameAs+%3FolP+.%0A++++++++++++++++%7D%0A++++++++++++&format=json&output=json&results=json
-00:06:33 INFO  Fuseki          :: [16] Query =                  PREFIX cw:  <http://localhost:3030/culturalworks/ontology#>                 PREFIX owl: <http://www.w3.org/2002/07/owl#>                 SELECT ?personName ?olP WHERE {                   ?p cw:name ?personName ; owl:sameAs ?olP .                 }             
-00:06:33 INFO  Fuseki          :: [16] 200 OK (38 ms)
-00:07:34 INFO  Fuseki          :: [17] GET http://localhost:3031/imdb/sparql?query=%0A++++++++++++++++PREFIX+cw%3A+++%3Chttp%3A//localhost%3A3030/culturalworks/ontology%23%3E%0A++++++++++++++++PREFIX+film%3A+%3Chttp%3A//localhost%3A3030/culturalworks/film%23%3E%0A++++++++++++++++PREFIX+owl%3A++%3Chttp%3A//www.w3.org/2002/07/owl%23%3E%0A++++++++++++++++SELECT+DISTINCT+%3FpersonName+%3FolP+WHERE+%7B%0A++++++++++++++++++VALUES+%3FolP+%7B+%3Chttp%3A//localhost%3A3030/culturalworks/ol/author/OL682312A%3E%0A++++%3Chttp%3A//localhost%3A3030/culturalworks/ol/author/OL1105435A%3E%0A++++%3Chttp%3A//localhost%3A3030/culturalworks/ol/author/OL107571A%3E%0A++++%3Chttp%3A//localhost%3A3030/culturalworks/ol/author/OL42596A%3E%0A++++%3Chttp%3A//localhost%3A3030/culturalworks/ol/author/OL402527A%3E+%7D%0A++++++++++++++++++%3Fp+cw%3Aname+%3FpersonName+%3B+owl%3AsameAs+%3FolP+.%0A++++++++++++++++++%3Ffc+a+film%3AFilmContribution+%3B+cw%3AcontributedBy+%3Fp+.%0A++++++++++++++++%7D%0A++++++++++++&format=json&output=json&results=json
-00:07:34 INFO  Fuseki          :: [17] Query =                  PREFIX cw:   <http://localhost:3030/culturalworks/ontology#>                 PREFIX film: <http://localhost:3030/culturalworks/film#>                 PREFIX owl:  <http://www.w3.org/2002/07/owl#>                 SELECT DISTINCT ?personName ?olP WHERE {                   VALUES ?olP { <http://localhost:3030/culturalworks/ol/author/OL682312A>     <http://localhost:3030/culturalworks/ol/author/OL1105435A>     <http://localhost:3030/culturalworks/ol/author/OL107571A>     <http://localhost:3030/culturalworks/ol/author/OL42596A>     <http://localhost:3030/culturalworks/ol/author/OL402527A> }                   ?p cw:name ?personName ; owl:sameAs ?olP .                   ?fc a film:FilmContribution ; cw:contributedBy ?p .                 }             
-00:07:34 INFO  Fuseki          :: [17] 200 OK (11 ms)
-00:07:35 INFO  Fuseki          :: [18] GET http://localhost:3031/imdb/sparql?query=%0APREFIX+cw%3A+++%3Chttp%3A//localhost%3A3030/culturalworks/ontology%23%3E%0APREFIX+film%3A+%3Chttp%3A//localhost%3A3030/culturalworks/film%23%3E%0APREFIX+book%3A+%3Chttp%3A//localhost%3A3030/culturalworks/book%23%3E%0APREFIX+owl%3A++%3Chttp%3A//www.w3.org/2002/07/owl%23%3E%0APREFIX+wdt%3A++%3Chttp%3A//www.wikidata.org/prop/direct/%3E%0A%0ASELECT+DISTINCT+%3FpersonName+WHERE+%7B%0A%0A++%23+Local%3A+IMDB+endpoint+%E2%80%94+person+with+a+film+contribution%0A++%3Fp+cw%3Aname+%3FpersonName+%3B+owl%3AsameAs+%3FolP+.%0A++%3Ffc+a+film%3AFilmContribution+%3B+cw%3AcontributedBy+%3Fp+.%0A%0A++%23+Federate+to+the+BOOK+endpoint+%E2%80%94+same+person+also+wrote+a+book%0A++SERVICE+%3Chttp%3A//localhost%3A3032/books/sparql%3E+%7B%0A++++%3FolP+a+cw%3ARealPerson+%3B+owl%3AsameAs+%3Fwd+.%0A++++%3Fbc+a+book%3ABookContribution+%3B+cw%3AcontributedBy+%3FolP+.%0A++++FILTER%28STRSTARTS%28STR%28%3Fwd%29%2C+%22http%3A//www.wikidata.org/entity/%22%29%29%0A++%7D%0A%0A++%23+Federate+to+Wikidata+%E2%80%94+confirm+the+person+has+an+occupation+on+Wikidata%0A++SERVICE+%3Chttps%3A//query.wikidata.org/sparql%3E+%7B%0A++++%3Fwd+wdt%3AP106+%3Foccupation+.%0A++%7D%0A%7D%0AORDER+BY+%3FpersonName%0A&format=json&output=json&results=json
-00:07:35 INFO  Fuseki          :: [18] Query =  PREFIX cw:   <http://localhost:3030/culturalworks/ontology#> PREFIX film: <http://localhost:3030/culturalworks/film#> PREFIX book: <http://localhost:3030/culturalworks/book#> PREFIX owl:  <http://www.w3.org/2002/07/owl#> PREFIX wdt:  <http://www.wikidata.org/prop/direct/>  SELECT DISTINCT ?personName WHERE {    # Local: IMDB endpoint — person with a film contribution   ?p cw:name ?personName ; owl:sameAs ?olP .   ?fc a film:FilmContribution ; cw:contributedBy ?p .    # Federate to the BOOK endpoint — same person also wrote a book   SERVICE <http://localhost:3032/books/sparql> {     ?olP a cw:RealPerson ; owl:sameAs ?wd .     ?bc a book:BookContribution ; cw:contributedBy ?olP .     FILTER(STRSTARTS(STR(?wd), "http://www.wikidata.org/entity/"))   }    # Federate to Wikidata — confirm the person has an occupation on Wikidata   SERVICE <https://query.wikidata.org/sparql> {     ?wd wdt:P106 ?occupation .   } } ORDER BY ?personName 
-00:07:38 INFO  Fuseki          :: [18] 200 OK (3.150 s)
-00:07:38 INFO  Fuseki          :: [19] GET http://localhost:3031/imdb/sparql?query=%0APREFIX+cw%3A+++%3Chttp%3A//localhost%3A3030/culturalworks/ontology%23%3E%0APREFIX+film%3A+%3Chttp%3A//localhost%3A3030/culturalworks/film%23%3E%0A%0ASELECT+%3FpersonName+%28COUNT%28%3Ffc%29+AS+%3Fcredits%29+WHERE+%7B%0A++%3Fp+cw%3Aname+%3FpersonName+.%0A++%3Ffc+a+film%3AFilmContribution+%3B+cw%3AcontributedBy+%3Fp+.%0A%7D%0AGROUP+BY+%3FpersonName%0AORDER+BY+DESC%28%3Fcredits%29+%3FpersonName%0A&format=json&output=json&results=json
-00:07:38 INFO  Fuseki          :: [19] Query =  PREFIX cw:   <http://localhost:3030/culturalworks/ontology#> PREFIX film: <http://localhost:3030/culturalworks/film#>  SELECT ?personName (COUNT(?fc) AS ?credits) WHERE {   ?p cw:name ?personName .   ?fc a film:FilmContribution ; cw:contributedBy ?p . } GROUP BY ?personName ORDER BY DESC(?credits) ?personName 
-00:07:38 INFO  Fuseki          :: [19] 200 OK (79 ms)
-00:07:38 INFO  Fuseki          :: [20] GET http://localhost:3031/imdb/sparql?query=%0APREFIX+cw%3A+++%3Chttp%3A//localhost%3A3030/culturalworks/ontology%23%3E%0APREFIX+film%3A+%3Chttp%3A//localhost%3A3030/culturalworks/film%23%3E%0APREFIX+book%3A+%3Chttp%3A//localhost%3A3030/culturalworks/book%23%3E%0A%0ASELECT+%3FpersonName+%28COUNT%28%3Ffc%29+AS+%3Fcredits%29+WHERE+%7B%0A++%3Fp+cw%3Aname+%3FpersonName+.%0A++%3Ffc+a+film%3AFilmContribution+%3B+cw%3AcontributedBy+%3Fp+.%0A%0A++%23+Useless+side-trip%3A+a+developer+who+doesn%27t+know+that+film+data+lives%0A++%23+only+on+the+IMDB+endpoint+asks+the+books+endpoint+anyway%2C+%22just+in+case%22.%0A++OPTIONAL+%7B%0A++++SERVICE+%3Chttp%3A//localhost%3A3032/books/sparql%3E+%7B%0A++++++%3Fb+a+book%3ABook+%3B+cw%3AcontributedBy+%3Fp+.%0A++++%7D%0A++%7D%0A%7D%0AGROUP+BY+%3FpersonName%0AORDER+BY+DESC%28%3Fcredits%29+%3FpersonName%0A&format=json&output=json&results=json
-00:07:38 INFO  Fuseki          :: [20] Query =  PREFIX cw:   <http://localhost:3030/culturalworks/ontology#> PREFIX film: <http://localhost:3030/culturalworks/film#> PREFIX book: <http://localhost:3030/culturalworks/book#>  SELECT ?personName (COUNT(?fc) AS ?credits) WHERE {   ?p cw:name ?personName .   ?fc a film:FilmContribution ; cw:contributedBy ?p .    # Useless side-trip: a developer who doesn't know that film data lives   # only on the IMDB endpoint asks the books endpoint anyway, "just in case".   OPTIONAL {     SERVICE <http://localhost:3032/books/sparql> {       ?b a book:Book ; cw:contributedBy ?p .     }   } } GROUP BY ?personName ORDER BY DESC(?credits) ?personName 
-00:07:41 INFO  Fuseki          :: [20] 200 OK (2.963 s)
-00:11:47 INFO  Fuseki          :: [21] GET http://localhost:3031/imdb/sparql?query=%0A++++++++++++++++PREFIX+cw%3A++%3Chttp%3A//localhost%3A3030/culturalworks/ontology%23%3E%0A++++++++++++++++PREFIX+owl%3A+%3Chttp%3A//www.w3.org/2002/07/owl%23%3E%0A++++++++++++++++SELECT+%3FpersonName+%3FolP+WHERE+%7B%0A++++++++++++++++++%3Fp+cw%3Aname+%3FpersonName+%3B+owl%3AsameAs+%3FolP+.%0A++++++++++++++++%7D%0A++++++++++++&format=json&output=json&results=json
-00:11:47 INFO  Fuseki          :: [21] Query =                  PREFIX cw:  <http://localhost:3030/culturalworks/ontology#>                 PREFIX owl: <http://www.w3.org/2002/07/owl#>                 SELECT ?personName ?olP WHERE {                   ?p cw:name ?personName ; owl:sameAs ?olP .                 }             
-00:11:47 INFO  Fuseki          :: [21] 200 OK (8 ms)
-00:12:48 INFO  Fuseki          :: [22] GET http://localhost:3031/imdb/sparql?query=%0A++++++++++++++++PREFIX+cw%3A+++%3Chttp%3A//localhost%3A3030/culturalworks/ontology%23%3E%0A++++++++++++++++PREFIX+film%3A+%3Chttp%3A//localhost%3A3030/culturalworks/film%23%3E%0A++++++++++++++++PREFIX+owl%3A++%3Chttp%3A//www.w3.org/2002/07/owl%23%3E%0A++++++++++++++++SELECT+DISTINCT+%3FpersonName+%3FolP+WHERE+%7B%0A++++++++++++++++++VALUES+%3FolP+%7B+%3Chttp%3A//localhost%3A3030/culturalworks/ol/author/OL682312A%3E%0A++++%3Chttp%3A//localhost%3A3030/culturalworks/ol/author/OL1105435A%3E%0A++++%3Chttp%3A//localhost%3A3030/culturalworks/ol/author/OL107571A%3E%0A++++%3Chttp%3A//localhost%3A3030/culturalworks/ol/author/OL42596A%3E%0A++++%3Chttp%3A//localhost%3A3030/culturalworks/ol/author/OL402527A%3E+%7D%0A++++++++++++++++++%3Fp+cw%3Aname+%3FpersonName+%3B+owl%3AsameAs+%3FolP+.%0A++++++++++++++++++%3Ffc+a+film%3AFilmContribution+%3B+cw%3AcontributedBy+%3Fp+.%0A++++++++++++++++%7D%0A++++++++++++&format=json&output=json&results=json
-00:12:48 INFO  Fuseki          :: [22] Query =                  PREFIX cw:   <http://localhost:3030/culturalworks/ontology#>                 PREFIX film: <http://localhost:3030/culturalworks/film#>                 PREFIX owl:  <http://www.w3.org/2002/07/owl#>                 SELECT DISTINCT ?personName ?olP WHERE {                   VALUES ?olP { <http://localhost:3030/culturalworks/ol/author/OL682312A>     <http://localhost:3030/culturalworks/ol/author/OL1105435A>     <http://localhost:3030/culturalworks/ol/author/OL107571A>     <http://localhost:3030/culturalworks/ol/author/OL42596A>     <http://localhost:3030/culturalworks/ol/author/OL402527A> }                   ?p cw:name ?personName ; owl:sameAs ?olP .                   ?fc a film:FilmContribution ; cw:contributedBy ?p .                 }             
-00:12:48 INFO  Fuseki          :: [22] 200 OK (4 ms)
-00:12:48 INFO  Fuseki          :: [23] GET http://localhost:3031/imdb/sparql?query=%0APREFIX+cw%3A+++%3Chttp%3A//localhost%3A3030/culturalworks/ontology%23%3E%0APREFIX+film%3A+%3Chttp%3A//localhost%3A3030/culturalworks/film%23%3E%0APREFIX+book%3A+%3Chttp%3A//localhost%3A3030/culturalworks/book%23%3E%0APREFIX+owl%3A++%3Chttp%3A//www.w3.org/2002/07/owl%23%3E%0APREFIX+wdt%3A++%3Chttp%3A//www.wikidata.org/prop/direct/%3E%0A%0ASELECT+DISTINCT+%3FpersonName+WHERE+%7B%0A%0A++%23+Local%3A+IMDB+endpoint+%E2%80%94+person+with+a+film+contribution%0A++%3Fp+cw%3Aname+%3FpersonName+%3B+owl%3AsameAs+%3FolP+.%0A++%3Ffc+a+film%3AFilmContribution+%3B+cw%3AcontributedBy+%3Fp+.%0A%0A++%23+Federate+to+the+BOOK+endpoint+%E2%80%94+same+person+also+wrote+a+book%0A++SERVICE+%3Chttp%3A//localhost%3A3032/books/sparql%3E+%7B%0A++++%3FolP+a+cw%3ARealPerson+%3B+owl%3AsameAs+%3Fwd+.%0A++++%3Fbc+a+book%3ABookContribution+%3B+cw%3AcontributedBy+%3FolP+.%0A++++FILTER%28STRSTARTS%28STR%28%3Fwd%29%2C+%22http%3A//www.wikidata.org/entity/%22%29%29%0A++%7D%0A%0A++%23+Federate+to+Wikidata+%E2%80%94+confirm+the+person+has+an+occupation+on+Wikidata%0A++SERVICE+%3Chttps%3A//query.wikidata.org/sparql%3E+%7B%0A++++%3Fwd+wdt%3AP106+%3Foccupation+.%0A++%7D%0A%7D%0AORDER+BY+%3FpersonName%0A&format=json&output=json&results=json
-00:12:48 INFO  Fuseki          :: [23] Query =  PREFIX cw:   <http://localhost:3030/culturalworks/ontology#> PREFIX film: <http://localhost:3030/culturalworks/film#> PREFIX book: <http://localhost:3030/culturalworks/book#> PREFIX owl:  <http://www.w3.org/2002/07/owl#> PREFIX wdt:  <http://www.wikidata.org/prop/direct/>  SELECT DISTINCT ?personName WHERE {    # Local: IMDB endpoint — person with a film contribution   ?p cw:name ?personName ; owl:sameAs ?olP .   ?fc a film:FilmContribution ; cw:contributedBy ?p .    # Federate to the BOOK endpoint — same person also wrote a book   SERVICE <http://localhost:3032/books/sparql> {     ?olP a cw:RealPerson ; owl:sameAs ?wd .     ?bc a book:BookContribution ; cw:contributedBy ?olP .     FILTER(STRSTARTS(STR(?wd), "http://www.wikidata.org/entity/"))   }    # Federate to Wikidata — confirm the person has an occupation on Wikidata   SERVICE <https://query.wikidata.org/sparql> {     ?wd wdt:P106 ?occupation .   } } ORDER BY ?personName 
-00:12:51 INFO  Fuseki          :: [23] 200 OK (3.067 s)
-00:12:51 INFO  Fuseki          :: [24] GET http://localhost:3031/imdb/sparql?query=%0APREFIX+cw%3A+++%3Chttp%3A//localhost%3A3030/culturalworks/ontology%23%3E%0APREFIX+film%3A+%3Chttp%3A//localhost%3A3030/culturalworks/film%23%3E%0A%0ASELECT+%3FpersonName+%28COUNT%28%3Ffc%29+AS+%3Fcredits%29+WHERE+%7B%0A++%3Fp+cw%3Aname+%3FpersonName+.%0A++%3Ffc+a+film%3AFilmContribution+%3B+cw%3AcontributedBy+%3Fp+.%0A%7D%0AGROUP+BY+%3FpersonName%0AORDER+BY+DESC%28%3Fcredits%29+%3FpersonName%0A&format=json&output=json&results=json
-00:12:51 INFO  Fuseki          :: [24] Query =  PREFIX cw:   <http://localhost:3030/culturalworks/ontology#> PREFIX film: <http://localhost:3030/culturalworks/film#>  SELECT ?personName (COUNT(?fc) AS ?credits) WHERE {   ?p cw:name ?personName .   ?fc a film:FilmContribution ; cw:contributedBy ?p . } GROUP BY ?personName ORDER BY DESC(?credits) ?personName 
-00:12:51 INFO  Fuseki          :: [24] 200 OK (23 ms)
-00:12:51 INFO  Fuseki          :: [25] GET http://localhost:3031/imdb/sparql?query=%0APREFIX+cw%3A+++%3Chttp%3A//localhost%3A3030/culturalworks/ontology%23%3E%0APREFIX+film%3A+%3Chttp%3A//localhost%3A3030/culturalworks/film%23%3E%0APREFIX+book%3A+%3Chttp%3A//localhost%3A3030/culturalworks/book%23%3E%0A%0ASELECT+%3FpersonName+%28COUNT%28%3Ffc%29+AS+%3Fcredits%29+WHERE+%7B%0A++%3Fp+cw%3Aname+%3FpersonName+.%0A++%3Ffc+a+film%3AFilmContribution+%3B+cw%3AcontributedBy+%3Fp+.%0A%0A++%23+Useless+side-trip%3A+a+developer+who+doesn%27t+know+that+film+data+lives%0A++%23+only+on+the+IMDB+endpoint+asks+the+books+endpoint+anyway%2C+%22just+in+case%22.%0A++OPTIONAL+%7B%0A++++SERVICE+%3Chttp%3A//localhost%3A3032/books/sparql%3E+%7B%0A++++++%3Fb+a+book%3ABook+%3B+cw%3AcontributedBy+%3Fp+.%0A++++%7D%0A++%7D%0A%7D%0AGROUP+BY+%3FpersonName%0AORDER+BY+DESC%28%3Fcredits%29+%3FpersonName%0A&format=json&output=json&results=json
-00:12:51 INFO  Fuseki          :: [25] Query =  PREFIX cw:   <http://localhost:3030/culturalworks/ontology#> PREFIX film: <http://localhost:3030/culturalworks/film#> PREFIX book: <http://localhost:3030/culturalworks/book#>  SELECT ?personName (COUNT(?fc) AS ?credits) WHERE {   ?p cw:name ?personName .   ?fc a film:FilmContribution ; cw:contributedBy ?p .    # Useless side-trip: a developer who doesn't know that film data lives   # only on the IMDB endpoint asks the books endpoint anyway, "just in case".   OPTIONAL {     SERVICE <http://localhost:3032/books/sparql> {       ?b a book:Book ; cw:contributedBy ?p .     }   } } GROUP BY ?personName ORDER BY DESC(?credits) ?personName 
-00:12:53 INFO  Fuseki          :: [25] 200 OK (2.232 s)
+15:23:27 INFO  Fuseki          :: Apache Jena Fuseki 6.0.0
+15:23:27 INFO  Config          :: Fuseki Base = /home/pdosquet/projects/M3/kg_project_imdb_2026/run
+15:23:27 INFO  Config          :: Database: /imdb
+15:23:27 INFO  Config          :: UI Base: fuseki-server.jar
+15:23:27 INFO  Shiro           :: Shiro configuration: file:/home/pdosquet/projects/M3/kg_project_imdb_2026/run/shiro.ini
+15:23:27 INFO  Server          :: Path = /imdb
+15:23:27 INFO  Server          :: System
+15:23:27 INFO  Server          ::   Memory: 4.0 GiB
+15:23:27 INFO  Server          ::   PID:    125974
+15:23:28 INFO  Server          ::   Port:   http=3031
+15:23:28 INFO  Server          :: Start Fuseki
+15:23:42 INFO  Fuseki          :: [1] POST http://localhost:3031/imdb/data?default
+15:23:42 INFO  Fuseki          :: [1] Body: Content-Length=34653, Content-Type=text/turtle, Charset=null => Turtle : Count=471 Triples=471 Quads=0
+15:23:42 INFO  Fuseki          :: [1] 200 OK (74 ms)
+15:23:42 INFO  Fuseki          :: [2] POST http://localhost:3031/imdb/data?default
+15:23:42 INFO  Fuseki          :: [2] Body: Content-Length=19015, Content-Type=text/turtle, Charset=null => Turtle : Count=253 Triples=253 Quads=0
+15:23:42 INFO  Fuseki          :: [2] 200 OK (16 ms)
+15:23:42 INFO  Fuseki          :: [3] POST http://localhost:3031/imdb/data?default
+15:23:42 INFO  Fuseki          :: [3] Body: Content-Length=7514, Content-Type=text/turtle, Charset=null => Turtle : Count=95 Triples=95 Quads=0
+15:23:42 INFO  Fuseki          :: [3] 200 OK (6 ms)
+15:23:42 INFO  Fuseki          :: [4] POST http://localhost:3031/imdb/data?default
+15:23:42 INFO  Fuseki          :: [4] Body: Content-Length=466805, Content-Type=application/n-triples, Charset=null => N-Triples : Count=3258 Triples=3258 Quads=0
+15:23:42 INFO  Fuseki          :: [4] 200 OK (68 ms)
+15:23:42 INFO  Fuseki          :: [5] POST http://localhost:3031/imdb/data?default
+15:23:42 INFO  Fuseki          :: [5] Body: Content-Length=24440, Content-Type=application/n-triples, Charset=null => N-Triples : Count=152 Triples=152 Quads=0
+15:23:42 INFO  Fuseki          :: [5] 200 OK (3 ms)
+15:23:42 INFO  Fuseki          :: [6] POST http://localhost:3031/imdb/data?default
+15:23:42 INFO  Fuseki          :: [6] Body: Content-Length=435507, Content-Type=application/n-triples, Charset=null => N-Triples : Count=2590 Triples=2590 Quads=0
+15:23:42 INFO  Fuseki          :: [6] 200 OK (33 ms)
+15:23:42 INFO  Fuseki          :: [7] POST http://localhost:3031/imdb/data?default
+15:23:42 INFO  Fuseki          :: [7] Body: Content-Length=153313, Content-Type=application/n-triples, Charset=null => N-Triples : Count=918 Triples=918 Quads=0
+15:23:42 INFO  Fuseki          :: [7] 200 OK (12 ms)
+15:23:42 INFO  Fuseki          :: [8] POST http://localhost:3031/imdb/data?default
+15:23:42 INFO  Fuseki          :: [8] Body: Content-Length=170951, Content-Type=application/n-triples, Charset=null => N-Triples : Count=1142 Triples=1142 Quads=0
+15:23:42 INFO  Fuseki          :: [8] 200 OK (16 ms)
+15:23:42 INFO  Fuseki          :: [9] POST http://localhost:3031/imdb/data?default
+15:23:42 INFO  Fuseki          :: [9] Body: Content-Length=612652, Content-Type=application/n-triples, Charset=null => N-Triples : Count=3497 Triples=3497 Quads=0
+15:23:42 INFO  Fuseki          :: [9] 200 OK (36 ms)
+15:23:42 INFO  Fuseki          :: [10] POST http://localhost:3031/imdb/data?default
+15:23:42 INFO  Fuseki          :: [10] Body: Content-Length=48295, Content-Type=application/n-triples, Charset=null => N-Triples : Count=295 Triples=295 Quads=0
+15:23:42 INFO  Fuseki          :: [10] 200 OK (5 ms)
+15:23:42 INFO  Fuseki          :: [11] POST http://localhost:3031/imdb/data?default
+15:23:42 INFO  Fuseki          :: [11] Body: Content-Length=272181, Content-Type=application/n-triples, Charset=null => N-Triples : Count=1757 Triples=1757 Quads=0
+15:23:42 INFO  Fuseki          :: [11] 200 OK (17 ms)
+15:23:42 INFO  Fuseki          :: [12] POST http://localhost:3031/imdb/data?default
+15:23:42 INFO  Fuseki          :: [12] Body: Content-Length=4158, Content-Type=application/n-triples, Charset=null => N-Triples : Count=30 Triples=30 Quads=0
+15:23:42 INFO  Fuseki          :: [12] 200 OK (1 ms)
+15:23:42 INFO  Fuseki          :: [13] POST http://localhost:3031/imdb/data?default
+15:23:42 INFO  Fuseki          :: [13] Body: Content-Length=750, Content-Type=application/n-triples, Charset=null => N-Triples : Count=5 Triples=5 Quads=0
+15:23:42 INFO  Fuseki          :: [13] 200 OK (2 ms)
+15:23:43 INFO  Fuseki          :: [14] GET http://localhost:3031/imdb/sparql?query=SELECT+%28COUNT%28%2a%29+AS+%3fn%29+WHERE+%7b+%3fs+%3fp+%3fo+%7d
+15:23:43 INFO  Fuseki          :: [14] Query = SELECT (COUNT(*) AS ?n) WHERE { ?s ?p ?o }
+15:23:43 INFO  Fuseki          :: [14] 200 OK (171 ms)
+15:23:43 INFO  Fuseki          :: [15] GET http://localhost:3031/imdb/sparql?query=SELECT+%28COUNT%28%2a%29+AS+%3fn%29+WHERE+%7b+%3fs+%3fp+%3fo+%7d
+15:23:43 INFO  Fuseki          :: [15] Query = SELECT (COUNT(*) AS ?n) WHERE { ?s ?p ?o }
+15:23:43 INFO  Fuseki          :: [15] 200 OK (67 ms)

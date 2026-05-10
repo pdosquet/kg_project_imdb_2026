@@ -1,45 +1,25 @@
 prefixes:
-  cw: http://localhost:3030/culturalworks/ontology#
-  film: http://localhost:3030/culturalworks/film#
-  imdb: http://localhost:3030/culturalworks/imdb#
+  cw: https://example.org/culturalworks/ontology#
+  film: https://example.org/culturalworks/film#
+  imdb: https://example.org/culturalworks/imdb#
   owl: http://www.w3.org/2002/07/owl#
   xsd: http://www.w3.org/2001/XMLSchema#
   rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns#
+  grel: http://users.ugent.be/~bjdmeest/function/grel.ttl#
+  idlab-fn: https://w3id.org/imec/idlab/function#
 
 mappings:
 
-  # -------------------------------------------------------
-  # RegionIsoLookup: ISO 3166-1 codes only.
-  # Each code mints a new cw:Region individual and receives
-  # an explicit rdf:type cw:Region assertion. Pre-computed
-  # by preprocess.py which separates ISO from X-codes.
-  # -------------------------------------------------------
-
+  # Type assertion for ISO regions. region_iso_lookup.csv is the one
+  # remaining preprocessed file: rdf:type assertion needs a list of
+  # ISO codes, and computing that list requires set-difference against
+  # the seeded X-code list — which RML cannot natively express in a
+  # single condition without a working AND combinator.
   RegionIsoLookup:
     sources: [['data/generated/region_iso_lookup.csv~csv']]
     s: $(region_iri)
     po:
       - [a, cw:Region~iri]
-
-  # -------------------------------------------------------
-  # RegionXcodeLookup: IMDB X-codes only.
-  # References pre-existing imdb: individuals already typed
-  # in the ontology. No rdf:type assertion emitted here —
-  # asserting cw:Region on them would duplicate what the
-  # ontology already states.
-  # -------------------------------------------------------
-
-  RegionXcodeLookup:
-    sources: [['data/generated/region_xcode_lookup.csv~csv']]
-    s: $(region_iri)
-
-  # -------------------------------------------------------
-  # RegionSameAsMapping: owl:sameAs links between IMDB
-  # X-code individuals and external standard equivalents.
-  # Only XWG (former West Germany) appears in this dataset
-  # and has an ISO 3166-3 equivalent. Asserted in M3
-  # because these are graph facts, not deployment concerns.
-  # -------------------------------------------------------
 
   RegionSameAsMapping:
     sources: [['data/seeded/region_sameAs.csv~csv']]
@@ -48,46 +28,17 @@ mappings:
       - p: owl:sameAs
         o: $(external_iri)~iri
 
-  # -------------------------------------------------------
-  # TitleTypeLookup: maps title_type_id to its individual.
-  # title_type_id=2 (original) has no row — these AKAs are
-  # skipped at source level via is_original_title=0 condition.
-  # -------------------------------------------------------
-
   TitleTypeLookup:
     sources: [['data/seeded/title_type_lookup.csv~csv']]
     s: $(title_type_iri)
-
-  # -------------------------------------------------------
-  # AdditionalAttrLookup: maps additional_attrs string
-  # values to cw:TitleTypeCategory individuals.
-  # 4 distinct values, all covered (verified in preprocess.py).
-  # -------------------------------------------------------
 
   AdditionalAttrLookup:
     sources: [['data/seeded/additional_attrs_lookup.csv~csv']]
     s: $(title_type_iri)
 
-  # -------------------------------------------------------
-  # AlternativeTitleMapping: each non-original AKA row
-  # becomes a cw:AlternativeTitle instance.
-  #
-  # is_original_title=1 rows excluded via condition —
-  # original title already captured as cw:originalTitle
-  # on the work per M2 §4.5.
-  #
-  # cw:forRegion resolved via two lookups (ISO + X-code).
-  # Both join on region code; the correct IRI is already
-  # in the lookup so no conditional logic needed in RML.
-  # RMLMapper skips when region is null automatically.
-  #
-  # cw:inLanguage mints individual from ISO 639 code.
-  # RMLMapper skips when language is null automatically.
-  # -------------------------------------------------------
-
   AlternativeTitleMapping:
-    sources: [['data/generated/title_aka.csv~csv']]
-    s: http://localhost:3030/culturalworks/aka/$(title_id)/$(order)
+    sources: [['data/title_aka.csv~csv']]
+    s: https://example.org/culturalworks/aka/$(title_id)/$(order)
     condition:
       function: equal
       parameters:
@@ -98,25 +49,50 @@ mappings:
       - [cw:akaTitle, $(aka_title)]
 
       - p: cw:isAltTitleOf
-        o: http://localhost:3030/culturalworks/title/$(title_id)~iri
+        o: https://example.org/culturalworks/title/$(title_id)~iri
 
       - p: cw:inLanguage
-        o: http://localhost:3030/culturalworks/language/$(language)~iri
+        o: https://example.org/culturalworks/language/$(language)~iri
+        condition:
+          function: idlab-fn:notEqual
+          parameters:
+            - [grel:valueParameter, $(language)]
+            - [grel:valueParameter2, "\\N"]
 
+      # cw:forRegion: single PO using grel:controls_if to pick between
+      # the X-code lookup result (when found) and the minted ISO IRI
+      # (otherwise). Top-level condition skips \N regions.
       - p: cw:forRegion
         o:
-          - mapping: RegionIsoLookup
-            condition:
-              function: equal
-              parameters:
-                - [str1, $(region)]
-                - [str2, $(region)]
-          - mapping: RegionXcodeLookup
-            condition:
-              function: equal
-              parameters:
-                - [str1, $(region)]
-                - [str2, $(region)]
+          function: grel:controls_if
+          parameters:
+            - parameter: grel:bool_b
+              value:
+                function: idlab-fn:isNull
+                parameters:
+                  - parameter: idlab-fn:str
+                    value:
+                      function: idlab-fn:lookup
+                      parameters:
+                        - [idlab-fn:str, $(region)]
+                        - [idlab-fn:inputFile, "data/seeded/region_xcode_lookup.csv"]
+                        - [idlab-fn:fromColumn, "0"]
+                        - [idlab-fn:toColumn, "1"]
+            - [grel:any_true, "https://example.org/culturalworks/region/$(region)"]
+            - parameter: grel:any_false
+              value:
+                function: idlab-fn:lookup
+                parameters:
+                  - [idlab-fn:str, $(region)]
+                  - [idlab-fn:inputFile, "data/seeded/region_xcode_lookup.csv"]
+                  - [idlab-fn:fromColumn, "0"]
+                  - [idlab-fn:toColumn, "1"]
+          type: iri
+        condition:
+          function: idlab-fn:notEqual
+          parameters:
+            - [grel:valueParameter, $(region)]
+            - [grel:valueParameter2, "\\N"]
 
       - p: cw:hasTitleType
         o:
@@ -127,16 +103,9 @@ mappings:
                 - [str1, $(additional_attrs)]
                 - [str2, $(additional_attrs)]
 
-  # -------------------------------------------------------
-  # TitleAkaTitleTypeMapping: adds cw:hasTitleType from the
-  # junction table onto the same AKA individual.
-  # title_type_id=2 rows skipped automatically — no row in
-  # TitleTypeLookup means the join finds no match.
-  # -------------------------------------------------------
-
   TitleAkaTitleTypeMapping:
     sources: [['data/title_aka_title_type.csv~csv']]
-    s: http://localhost:3030/culturalworks/aka/$(title_id)/$(order)
+    s: https://example.org/culturalworks/aka/$(title_id)/$(order)
     po:
       - p: cw:hasTitleType
         o:

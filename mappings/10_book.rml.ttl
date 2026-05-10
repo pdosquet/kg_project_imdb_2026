@@ -10,8 +10,8 @@
 @prefix rml: <http://semweb.mmlab.be/ns/rml#>.
 @prefix ql: <http://semweb.mmlab.be/ns/ql#>.
 @prefix : <http://mapping.example.com/>.
-@prefix cw: <http://localhost:3030/culturalworks/ontology#>.
-@prefix book: <http://localhost:3030/culturalworks/book#>.
+@prefix cw: <https://example.org/culturalworks/ontology#>.
+@prefix book: <https://example.org/culturalworks/book#>.
 @prefix owl: <http://www.w3.org/2002/07/owl#>.
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
 
@@ -25,7 +25,7 @@
     rdfs:label "OlWork".
 :s_000 a rr:SubjectMap.
 :map_OlWork_000 rr:subjectMap :s_000.
-:s_000 rr:template "http://localhost:3030/culturalworks/ol/work/{ol_work_key}".
+:s_000 rr:template "https://example.org/culturalworks/ol/work/{ol_work_key}".
 :pom_000 a rr:PredicateObjectMap.
 :map_OlWork_000 rr:predicateObjectMap :pom_000.
 :pm_000 a rr:PredicateMap.
@@ -72,7 +72,7 @@
     rdfs:label "OlWorkLanguage".
 :s_001 a rr:SubjectMap.
 :map_OlWorkLanguage_000 rr:subjectMap :s_001.
-:s_001 rr:template "http://localhost:3030/culturalworks/ol/work/{ol_work_key}".
+:s_001 rr:template "https://example.org/culturalworks/ol/work/{ol_work_key}".
 :pom_004 a rr:PredicateObjectMap.
 :map_OlWorkLanguage_000 rr:predicateObjectMap :pom_004.
 :pm_004 a rr:PredicateMap.
@@ -80,7 +80,7 @@
 :pm_004 rr:constant cw:workLanguage.
 :pom_004 rr:objectMap :om_004.
 :om_004 a rr:ObjectMap;
-    rr:template "http://localhost:3030/culturalworks/language/{language_code}";
+    rr:template "https://example.org/culturalworks/language/{language_code}";
     rr:termType rr:IRI.
 :rules_000 void:exampleResource :map_OlLanguageType_000.
 :map_OlLanguageType_000 rml:logicalSource :source_002.
@@ -91,7 +91,7 @@
     rdfs:label "OlLanguageType".
 :s_002 a rr:SubjectMap.
 :map_OlLanguageType_000 rr:subjectMap :s_002.
-:s_002 rr:template "http://localhost:3030/culturalworks/language/{language_code}".
+:s_002 rr:template "https://example.org/culturalworks/language/{language_code}".
 :pom_005 a rr:PredicateObjectMap.
 :map_OlLanguageType_000 rr:predicateObjectMap :pom_005.
 :pm_005 a rr:PredicateMap.
@@ -110,7 +110,7 @@
     rdfs:label "OlLanguageSameAs".
 :s_003 a rr:SubjectMap.
 :map_OlLanguageSameAs_000 rr:subjectMap :s_003.
-:s_003 rr:template "http://localhost:3030/culturalworks/language/{language_code}".
+:s_003 rr:template "https://example.org/culturalworks/language/{language_code}".
 :pom_006 a rr:PredicateObjectMap.
 :map_OlLanguageSameAs_000 rr:predicateObjectMap :pom_006.
 :pm_006 a rr:PredicateMap.
@@ -129,7 +129,7 @@
     rdfs:label "OlPerson".
 :s_004 a rr:SubjectMap.
 :map_OlPerson_000 rr:subjectMap :s_004.
-:s_004 rr:template "http://localhost:3030/culturalworks/ol/author/{ol_key_short}".
+:s_004 rr:template "https://example.org/culturalworks/ol/author/{ol_key_short}".
 :pom_007 a rr:PredicateObjectMap.
 :map_OlPerson_000 rr:predicateObjectMap :pom_007.
 :pm_007 a rr:PredicateMap.
@@ -186,7 +186,7 @@
     rdfs:label "OlContribution".
 :s_005 a rr:SubjectMap.
 :map_OlContribution_000 rr:subjectMap :s_005.
-:s_005 rr:template "http://localhost:3030/culturalworks/ol/contribution/{ol_work_key}/{ol_key_short}".
+:s_005 rr:template "https://example.org/culturalworks/ol/contribution/{ol_work_key}/{ol_key_short}".
 :pom_012 a rr:PredicateObjectMap.
 :map_OlContribution_000 rr:predicateObjectMap :pom_012.
 :pm_012 a rr:PredicateMap.
@@ -203,7 +203,7 @@
 :pm_013 rr:constant cw:contributedBy.
 :pom_013 rr:objectMap :om_013.
 :om_013 a rr:ObjectMap;
-    rr:template "http://localhost:3030/culturalworks/ol/author/{ol_key_short}";
+    rr:template "https://example.org/culturalworks/ol/author/{ol_key_short}";
     rr:termType rr:IRI.
 :pom_014 a rr:PredicateObjectMap.
 :map_OlContribution_000 rr:predicateObjectMap :pom_014.
@@ -212,7 +212,7 @@
 :pm_014 rr:constant cw:involves.
 :pom_014 rr:objectMap :om_014.
 :om_014 a rr:ObjectMap;
-    rr:template "http://localhost:3030/culturalworks/ol/work/{ol_work_key}";
+    rr:template "https://example.org/culturalworks/ol/work/{ol_work_key}";
     rr:termType rr:IRI.
 :pom_015 a rr:PredicateObjectMap.
 :map_OlContribution_000 rr:predicateObjectMap :pom_015.
@@ -232,7 +232,7 @@
     rdfs:label "OlImdbSameAs".
 :s_006 a rr:SubjectMap.
 :map_OlImdbSameAs_000 rr:subjectMap :s_006.
-:s_006 rr:template "http://localhost:3030/culturalworks/person/{imdb_talent_id}".
+:s_006 rr:template "https://example.org/culturalworks/person/{imdb_talent_id}".
 :pom_016 a rr:PredicateObjectMap.
 :map_OlImdbSameAs_000 rr:predicateObjectMap :pom_016.
 :pm_016 a rr:PredicateMap.
@@ -240,5 +240,5 @@
 :pm_016 rr:constant owl:sameAs.
 :pom_016 rr:objectMap :om_016.
 :om_016 a rr:ObjectMap;
-    rr:template "http://localhost:3030/culturalworks/ol/author/{ol_key_short}";
+    rr:template "https://example.org/culturalworks/ol/author/{ol_key_short}";
     rr:termType rr:IRI.

@@ -44,26 +44,34 @@ source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
-## Shell scripts
+## Pipeline
 
-| Script | Purpose |
+[run_pipeline.sh](run_pipeline.sh) is the one-shot orchestrator. Each step is idempotent — re-running skips work already done.
+
+| Subcommand | What it does |
 |---|---|
-| [load_graphs.sh](load_graphs.sh) | **Single-endpoint topology.** POSTs every `ontologies/*.ttl` and `output/*.nt` file into one Fuseki dataset at `http://localhost:3030/culturalworks`, then prints the total triple count. Used for the baseline / oracle in the federation experiment. |
-| [fuseki_two_endpoints.sh](fuseki_two_endpoints.sh) | **Launches two in-memory Fuseki servers** for the split topology: IMDB on port 3030 (`/imdb`) and Books on port 3031 (`/books`). Runs in the foreground; Ctrl+C stops both. |
-| [load_split.sh](load_split.sh) | **Two-endpoint loader.** Loads the `cw:` + `film:` + `imdb:` ontologies and IMDB data into port 3030, the `cw:` + `book:` ontologies and book data into port 3031, and places the `owl:sameAs` bridge triples on the IMDB side so it can federate to the book endpoint. |
+| `prepare`  | Compile YARRRML → RML, preprocess IMDB CSVs, run RMLMapper for `01..09` (writes `output/0[1-9]_*.nt`). |
+| `ol`       | Open Library pipeline: download authors dump, curate sameAs, fetch works, run RMLMapper for `10_book` (writes `output/10_book.nt`). |
+| `close`    | Materialise OWL 2 RL closure over the merged ontology + raw triples (writes `output/closed.nt`). See [CLOSURE_STRATEGY.md](CLOSURE_STRATEGY.md). |
+| `serve`    | Start three in-memory Fuseki endpoints: `3030/culturalworks` (oracle), `3031/imdb`, `3032/books`. |
+| `load`     | `DROP ALL` then load the closed graph into `3030`, and split raw graphs + `sameAs` bridge into `3031` / `3032`. Calls [load_graphs.sh](load_graphs.sh) and [load_split.sh](load_split.sh). |
+| `evaluate` | Run [federation_experiment.py](federation_experiment.py) (writes `federation_results.json`). |
+| `stop`     | Kill the running Fuseki processes. |
+| `all`      | `prepare` + `ol` + `close` + `serve` + `load` + `evaluate`. |
 
 ## Typical workflow
 
 ```bash
-# Single-endpoint baseline
-./apache-jena-fuseki-6.0.0/fuseki-server --mem --port 3030 /culturalworks &
-bash load_graphs.sh
-
-# Two-endpoint topology (separate terminal)
-bash fuseki_two_endpoints.sh
-bash load_split.sh
-
-# Run the federation experiment
-python3 federation_experiment.py --all --out results.json
+./run_pipeline.sh all          # end-to-end
+./run_pipeline.sh evaluate     # re-run the federation experiment only
+./run_pipeline.sh stop         # tear down the Fuseki processes
 ```
+
+## Endpoints (after `load`)
+
+| Endpoint | Triples | Contents |
+|---|---:|---|
+| `localhost:3030/culturalworks` | ~30 K | OWL 2 RL closure baseline (oracle) — `closed.nt` + 4 ontologies |
+| `localhost:3031/imdb`          | ~14 K | Raw IMDB graphs + `owl:sameAs` bridge + `cw`/`film`/`imdb` ontologies |
+| `localhost:3032/books`         | ~1 K  | Raw book graph + `cw`/`book` ontologies |
 

@@ -1,22 +1,17 @@
 prefixes:
-  cw: http://localhost:3030/culturalworks/ontology#
-  film: http://localhost:3030/culturalworks/film#
-  imdb: http://localhost:3030/culturalworks/imdb#
+  cw: https://example.org/culturalworks/ontology#
+  film: https://example.org/culturalworks/film#
+  imdb: https://example.org/culturalworks/imdb#
   xsd: http://www.w3.org/2001/XMLSchema#
   rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns#
 
 mappings:
 
-  # -------------------------------------------------------
-  # CharacterLookup: one cw:FictionalCharacter individual
-  # per character occurrence. Pre-computed by
-  # preprocess_complex.py which explodes multi-valued
-  # role_names (e.g. "Herself,Host") into one row each,
-  # and URL-encodes the character name in the IRI.
-  # The IRI incorporates title_id to avoid clashes across
-  # works — the same name can appear in different films.
-  # -------------------------------------------------------
-
+  # CharacterLookup: one cw:FictionalCharacter individual per character.
+  # The role_names column in title_principal can hold a comma-separated
+  # list ("Herself,Host"). RMLMapper does NOT support iterating an
+  # FnO list-returning function across multiple SUBJECT term maps in
+  # this build, so the explosion is precomputed in preprocess.py.
   CharacterLookup:
     sources: [['data/generated/characters.csv~csv']]
     s: $(character_iri)
@@ -24,42 +19,24 @@ mappings:
       - [a, cw:FictionalCharacter~iri]
       - [cw:name, $(character_name)]
 
-  # -------------------------------------------------------
-  # FilmContributionMapping: reified ternary associating
-  # a person, a work, and a role.
-  #
-  # Source: title_principal_resolved.csv — a pre-processed
-  # version of title_principal.csv with an added column
-  # resolved_role_iri. This was necessary because the role
-  # depends on BOTH category_id AND job simultaneously:
-  # category_id is the coarse credit type (writer, director)
-  # and job is the fine-grained specialisation (creator,
-  # co-director, teleplay...). A single RML join cannot
-  # match on two columns at once, so the resolution is done
-  # in Python before mapping (preprocess_lookups.py).
-  #
-  # cw:hasRole reads resolved_role_iri directly — no join.
-  #
-  # film:portrays links to CharacterLookup joined on
-  # (title_id, talent_id). Only emitted when the join finds
-  # a match, i.e. when role_names was non-null.
-  #
-  # imdb:billingOrder preserves the order column — the one
-  # ordering attribute kept per M2 because it carries
-  # screen-credit ranking semantics.
-  # -------------------------------------------------------
-
+  # FilmContributionMapping: reified ternary linking person, work, role.
+  # Source: title_principal_resolved.csv — preprocessed because the role
+  # is keyed on (category_id, job) jointly, and RMLMapper's composite-key
+  # template join (e.g. "$(category_id)|$(job)") fires only when BOTH
+  # columns are non-empty; the seeded fallback rows have empty job, so
+  # the join returns zero triples. Until that's fixed upstream the
+  # resolved_role_iri is computed in Python.
   FilmContributionMapping:
     sources: [['data/generated/title_principal_resolved.csv~csv']]
-    s: http://localhost:3030/culturalworks/contribution/$(title_id)/$(talent_id)
+    s: https://example.org/culturalworks/contribution/$(title_id)/$(talent_id)
     po:
       - [a, film:FilmContribution~iri]
 
       - p: cw:contributedBy
-        o: http://localhost:3030/culturalworks/person/$(talent_id)~iri
+        o: https://example.org/culturalworks/person/$(talent_id)~iri
 
       - p: cw:involves
-        o: http://localhost:3030/culturalworks/title/$(title_id)~iri
+        o: https://example.org/culturalworks/title/$(title_id)~iri
 
       - p: imdb:billingOrder
         o: $(order)

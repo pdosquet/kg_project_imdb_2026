@@ -10,9 +10,9 @@
 @prefix rml: <http://semweb.mmlab.be/ns/rml#>.
 @prefix ql: <http://semweb.mmlab.be/ns/ql#>.
 @prefix : <http://mapping.example.com/>.
-@prefix cw: <http://localhost:3030/culturalworks/ontology#>.
-@prefix film: <http://localhost:3030/culturalworks/film#>.
-@prefix imdb: <http://localhost:3030/culturalworks/imdb#>.
+@prefix cw: <https://example.org/culturalworks/ontology#>.
+@prefix film: <https://example.org/culturalworks/film#>.
+@prefix imdb: <https://example.org/culturalworks/imdb#>.
 
 :rules_000 a void:Dataset;
     void:exampleResource :map_RoleLookup_000.
@@ -34,7 +34,7 @@
     rdfs:label "TalentRoleMapping".
 :s_001 a rr:SubjectMap.
 :map_TalentRoleMapping_000 rr:subjectMap :s_001.
-:s_001 rr:template "http://localhost:3030/culturalworks/person/{talent_id}".
+:s_001 rr:template "https://example.org/culturalworks/person/{talent_id}".
 :pom_000 a rr:PredicateObjectMap.
 :map_TalentRoleMapping_000 rr:predicateObjectMap :pom_000.
 :pm_000 a rr:PredicateMap.

@@ -87,7 +87,7 @@ cmd_prepare() {
         local name out
         name=$(basename "$f" .rml.ttl)
         out="output/${name}.nt"
-        java -jar "$RMLMAPPER" -m "$f" -o "$out" -s ntriples >/dev/null 2>&1
+        java -jar "$RMLMAPPER" -m "$f" -o "$out" -s ntriples -d >/dev/null 2>&1
         printf "  %-25s %s triples\n" "$name" "$(wc -l < "$out")"
     done
 }

@@ -1,5 +1,5 @@
 prefixes:
-  cw: http://localhost:3030/culturalworks/ontology#
+  cw: https://example.org/culturalworks/ontology#
   rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns#
 
 mappings:
@@ -18,7 +18,7 @@ mappings:
 
   TitleGenreMapping:
     sources: [['data/title_genre.csv~csv']]
-    s: http://localhost:3030/culturalworks/title/$(title_id)
+    s: https://example.org/culturalworks/title/$(title_id)
     po:
       - p: cw:hasGenre
         o:

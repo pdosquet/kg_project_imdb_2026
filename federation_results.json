@@ -4,7 +4,7 @@
       "strategy": "single_endpoint",
       "http_requests": 1,
       "bytes_received": 375,
-      "wall_clock_s": 0.018734052020590752,
+      "wall_clock_s": 0.018680304987356067,
       "rows_returned": 5,
       "result_set": [
         "Orson Welles",
@@ -19,7 +19,7 @@
       "request_log": [
         {
           "endpoint": "http://localhost:3030/culturalworks/sparql",
-          "query_preview": "PREFIX cw: <http://localhost:3030/culturalworks/ontology#> PREFIX film: <http://localhost:3030/culturalworks/film#> PREF"
+          "query_preview": "PREFIX cw: <https://example.org/culturalworks/ontology#> PREFIX film: <https://example.org/culturalworks/film#> PREFIX b"
         }
       ],
       "request_log_size": 1
@@ -27,17 +27,17 @@
     {
       "strategy": "rdflib_naive",
       "http_requests": 2,
-      "bytes_received": 842,
-      "wall_clock_s": 60.466250419965945,
+      "bytes_received": 832,
+      "wall_clock_s": 250.71082801697776,
       "rows_returned": 0,
       "result_set": [],
       "server_imdb_reqs": 1,
       "server_books_reqs": 0,
-      "error": "Expecting property name enclosed in double quotes: line 786921 column 6 (char 19079163)",
+      "error": "Invalid control character at: line 36518 column 45 (char 876567)",
       "request_log": [
         {
           "endpoint": "http://localhost:3031/imdb/sparql",
-          "query_preview": "PREFIX cw: <http://localhost:3030/culturalworks/ontology#> PREFIX owl: <http://www.w3.org/2002/07/owl#> SELECT ?personNa"
+          "query_preview": "PREFIX cw: <https://example.org/culturalworks/ontology#> PREFIX owl: <http://www.w3.org/2002/07/owl#> SELECT ?personName"
         },
         {
           "endpoint": "https://query.wikidata.org/sparql",
@@ -49,27 +49,21 @@
     {
       "strategy": "rdflib_optimised",
       "http_requests": 3,
-      "bytes_received": 2187,
-      "wall_clock_s": 0.40055257198400795,
-      "rows_returned": 5,
-      "result_set": [
-        "Orson Welles",
-        "Peter Hacks",
-        "Victor Hugo",
-        "Werner Herzog",
-        "William Nicholson"
-      ],
+      "bytes_received": 1716,
+      "wall_clock_s": 35.48553153604735,
+      "rows_returned": 0,
+      "result_set": [],
       "server_imdb_reqs": 1,
       "server_books_reqs": 1,
-      "error": null,
+      "error": "HTTP Error 502: Bad Gateway",
       "request_log": [
         {
           "endpoint": "http://localhost:3032/books/sparql",
-          "query_preview": "PREFIX cw: <http://localhost:3030/culturalworks/ontology#> PREFIX book:<http://localhost:3030/culturalworks/book#> PREFI"
+          "query_preview": "PREFIX cw: <https://example.org/culturalworks/ontology#> PREFIX book:<https://example.org/culturalworks/book#> PREFIX ow"
         },
         {
           "endpoint": "http://localhost:3031/imdb/sparql",
-          "query_preview": "PREFIX cw: <http://localhost:3030/culturalworks/ontology#> PREFIX film: <http://localhost:3030/culturalworks/film#> PREF"
+          "query_preview": "PREFIX cw: <https://example.org/culturalworks/ontology#> PREFIX film: <https://example.org/culturalworks/film#> PREFIX o"
         },
         {
           "endpoint": "https://query.wikidata.org/sparql",
@@ -82,7 +76,7 @@
       "strategy": "jena_service",
       "http_requests": 1,
       "bytes_received": 375,
-      "wall_clock_s": 3.0705395190161653,
+      "wall_clock_s": 50.56916778598679,
       "rows_returned": 5,
       "result_set": [
         "Orson Welles",
@@ -97,7 +91,7 @@
       "request_log": [
         {
           "endpoint": "http://localhost:3031/imdb/sparql",
-          "query_preview": "PREFIX cw: <http://localhost:3030/culturalworks/ontology#> PREFIX film: <http://localhost:3030/culturalworks/film#> PREF"
+          "query_preview": "PREFIX cw: <https://example.org/culturalworks/ontology#> PREFIX film: <https://example.org/culturalworks/film#> PREFIX b"
         }
       ],
       "request_log_size": 1
@@ -108,7 +102,7 @@
       "strategy": "single_local",
       "http_requests": 1,
       "bytes_received": 97613,
-      "wall_clock_s": 0.02574917598394677,
+      "wall_clock_s": 0.020542873011436313,
       "rows_returned": 586,
       "result_set": [
         "Abel Santacruz",
@@ -704,7 +698,7 @@
       "request_log": [
         {
           "endpoint": "http://localhost:3030/culturalworks/sparql",
-          "query_preview": "PREFIX cw: <http://localhost:3030/culturalworks/ontology#> PREFIX film: <http://localhost:3030/culturalworks/film#> SELE"
+          "query_preview": "PREFIX cw: <https://example.org/culturalworks/ontology#> PREFIX film: <https://example.org/culturalworks/film#> SELECT ?"
         }
       ],
       "request_log_size": 1
@@ -713,7 +707,7 @@
       "strategy": "direct_imdb",
       "http_requests": 1,
       "bytes_received": 97613,
-      "wall_clock_s": 0.030363206984475255,
+      "wall_clock_s": 0.025653953955043107,
       "rows_returned": 586,
       "result_set": [
         "Abel Santacruz",
@@ -1309,7 +1303,7 @@
       "request_log": [
         {
           "endpoint": "http://localhost:3031/imdb/sparql",
-          "query_preview": "PREFIX cw: <http://localhost:3030/culturalworks/ontology#> PREFIX film: <http://localhost:3030/culturalworks/film#> SELE"
+          "query_preview": "PREFIX cw: <https://example.org/culturalworks/ontology#> PREFIX film: <https://example.org/culturalworks/film#> SELECT ?"
         }
       ],
       "request_log_size": 1
@@ -1318,7 +1312,7 @@
       "strategy": "federated_blind",
       "http_requests": 1,
       "bytes_received": 97613,
-      "wall_clock_s": 2.2372344360337593,
+      "wall_clock_s": 1.9796669019851834,
       "rows_returned": 586,
       "result_set": [
         "Abel Santacruz",
@@ -1914,7 +1908,7 @@
       "request_log": [
         {
           "endpoint": "http://localhost:3031/imdb/sparql",
-          "query_preview": "PREFIX cw: <http://localhost:3030/culturalworks/ontology#> PREFIX film: <http://localhost:3030/culturalworks/film#> PREF"
+          "query_preview": "PREFIX cw: <https://example.org/culturalworks/ontology#> PREFIX film: <https://example.org/culturalworks/film#> PREFIX b"
         }
       ],
       "request_log_size": 1

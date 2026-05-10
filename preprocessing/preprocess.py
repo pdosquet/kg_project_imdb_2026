@@ -1,42 +1,17 @@
 """
 preprocess.py
 
-Transforms IMDB source CSVs into files needed by the YARRRML mappings.
-Must be run once before executing any mapping.
+Generates a small set of CSV lookups for the YARRRML mappings, covering
+the four transformations that pure RML/YARRRML cannot express:
 
-Folder structure
-----------------
-data/
-  *.csv          — IMDB source data (read-only)
-  seeded/        — Vocabulary lookups encoding M2 decisions. Edit manually.
-  generated/     — Files produced by this script. Never edit manually.
+  1. Composite-key join (category_id, job) -> title_principal_resolved.csv
+  2. Set membership / anti-join             -> title_structure_lookup.csv,
+                                               region_iso_lookup.csv
+  3. String explosion of multi-valued cells -> characters.csv
 
-Seeded files (inputs)
----------------------
-  role_lookup.csv                role_id -> individual IRI
-  content_type_lookup.csv        content_type_id -> WorkType individual IRI
-  title_type_lookup.csv          title_type_id -> TitleTypeCategory IRI
-  additional_attrs_lookup.csv    additional_attrs value -> individual IRI
-  contribution_role_lookup.csv   (category_id, job) -> role individual IRI
-  region_xcode_lookup.csv        IMDB X-code -> imdb: individual IRI
-  region_sameAs.csv              imdb: individual -> external standard IRI
-
-Generated files (outputs)
---------------------------
-  title_structure_lookup.csv     title_id -> OWL class IRI
-  characters.csv                 one row per character (exploded role_names)
-  seasons.csv                    synthesised cw:WorkVolume individuals
-  episode_volume_links.csv       episode title_id -> season IRI
-  title_principal_resolved.csv   title_principal + resolved_role_iri column
-  region_iso_lookup.csv          ISO 3166-1 code -> minted cw:Region IRI
-  region_xcode_lookup.csv        X-code -> imdb: IRI (copy of seeded, for YARRRML)
-
-Why preprocessing is needed
-----------------------------
-  1. No multi-column join in RML: role = f(category_id, job)
-  2. No conditional IRI templates: ISO vs X-code regions
-  3. No string splitting: multi-valued role_names
-  4. No entity synthesis: seasons don't exist as source rows
+Everything else (\\N filtering, language ISO branching, season synthesis,
+region X-code resolution) is now handled directly in YARRRML using
+idlab-fn / grel functions and conditional POs.
 """
 
 import csv
@@ -48,10 +23,10 @@ SEED = Path("data/seeded")
 GEN  = Path("data/generated")
 GEN.mkdir(exist_ok=True)
 
-CW   = "http://localhost:3030/culturalworks/ontology#"
-FILM = "http://localhost:3030/culturalworks/film#"
-IMDB = "http://localhost:3030/culturalworks/imdb#"
-BASE = "http://localhost:3030/culturalworks/"
+CW   = "https://example.org/culturalworks/ontology#"
+FILM = "https://example.org/culturalworks/film#"
+IMDB = "https://example.org/culturalworks/imdb#"
+BASE = "https://example.org/culturalworks/"
 
 def read_csv(path):
     with open(path, newline="", encoding="utf-8") as f:
@@ -86,29 +61,24 @@ print("Seeded files: all present")
 print()
 
 # ================================================================
-# PART 0: Strip IMDB \N null markers from raw CSVs consumed by RML
+# PART 0: Strip \N from title_principal.csv only.
+# title_principal_resolved.csv (Part 4) is keyed on (category, job),
+# and the join needs job="" (not "\N") to match the seeded fallback
+# rows. The other IMDB CSVs are now read raw by YARRRML, which
+# filters \N via idlab-fn:notEqual conditions on each PO.
 # ================================================================
-# IMDB's official non-commercial dump uses \N as the literal NULL
-# marker (MySQL mysqlimport convention). Without this step, RML
-# emits invalid xsd:integer / xsd:gYear literals like "\N"^^xsd:integer
-# for empty year and runtime fields. Cleaned copies are written to
-# data/generated/ and consumed by mappings.
 
-NULL_STRIP_FILES = ["talent.csv", "title.csv", "title_aka.csv", "title_principal.csv"]
-
-for fname in NULL_STRIP_FILES:
-    src = SRC / fname
-    dst = GEN / fname
-    rows = read_csv(src)
-    cleaned = [
-        {k: ("" if is_null(v) else v) for k, v in row.items()}
-        for row in rows
-    ]
-    fieldnames = list(rows[0].keys()) if rows else []
-    write_csv(dst, fieldnames, cleaned)
-    nulls = sum(1 for row in rows for v in row.values() if v == r"\N")
-    print(f"0. generated/{fname} — stripped {nulls} \\N markers")
-
+src = SRC / "title_principal.csv"
+dst = GEN / "title_principal.csv"
+rows = read_csv(src)
+cleaned = [
+    {k: ("" if is_null(v) else v) for k, v in row.items()}
+    for row in rows
+]
+fieldnames = list(rows[0].keys()) if rows else []
+write_csv(dst, fieldnames, cleaned)
+nulls = sum(1 for row in rows for v in row.values() if v == r"\N")
+print(f"0. generated/title_principal.csv — stripped {nulls} \\N markers")
 print()
 
 # ================================================================
@@ -182,42 +152,9 @@ print(f"2. generated/characters.csv — {len(characters)} rows ({multi} multi-va
 print()
 
 # ================================================================
-# PART 3: Season synthesis + episode-volume links
+# PART 3 (deleted): Season synthesis is now done directly in
+# 07_title_episode.yarrrml using template subjects and -d dedup.
 # ================================================================
-
-seasons_seen = set()
-seasons, ep_vol_links = [], []
-
-for row in read_csv(SRC / "title_episode.csv"):
-    season, episode = row["season_number"], row["episode_number"]
-    if is_null(season):
-        continue
-    key        = (row["parent_title_id"], season)
-    season_iri = BASE + "season/" + row["parent_title_id"] + "/S" + season
-    if key not in seasons_seen:
-        seasons_seen.add(key)
-        seasons.append({
-            "parent_title_id": row["parent_title_id"],
-            "season_number":   season,
-            "season_iri":      season_iri,
-            "series_iri":      BASE + "title/" + row["parent_title_id"],
-        })
-    ep_vol_links.append({
-        "title_id":       row["title_id"],
-        "season_iri":     season_iri,
-        "episode_number": "" if is_null(episode) else episode,
-    })
-
-write_csv(GEN / "seasons.csv",
-          ["parent_title_id", "season_number", "season_iri", "series_iri"], seasons)
-write_csv(GEN / "episode_volume_links.csv",
-          ["title_id", "season_iri", "episode_number"], ep_vol_links)
-
-total = len(read_csv(SRC / "title_episode.csv"))
-print(f"3. generated/seasons.csv — {len(seasons)} synthesised seasons")
-print(f"4. generated/episode_volume_links.csv — {len(ep_vol_links)} episodes with known season")
-print(f"   Episodes with null season_number (no volume): {total - len(ep_vol_links)}")
-print()
 
 # ================================================================
 # PART 4: Role resolution for title_principal
@@ -265,60 +202,25 @@ xcode_map = {
 aka_rows     = read_csv(SRC / "title_aka.csv")
 region_codes = {r["region"] for r in aka_rows if not is_null(r["region"])}
 
-iso_lookup, xcode_lookup = [], []
+iso_lookup = []
 
 for code in sorted(region_codes):
-    if code in xcode_map:
-        xcode_lookup.append({"region_code": code, "region_iri": xcode_map[code]})
-    else:
+    if code not in xcode_map:
         iso_lookup.append({
             "region_code": code,
             "region_iri":  BASE + "region/" + urllib.parse.quote(code, safe=""),
         })
 
-write_csv(GEN / "region_iso_lookup.csv",   ["region_code", "region_iri"], iso_lookup)
-write_csv(GEN / "region_xcode_lookup.csv", ["region_code", "region_iri"], xcode_lookup)
-
+write_csv(GEN / "region_iso_lookup.csv", ["region_code", "region_iri"], iso_lookup)
 print(f"6. generated/region_iso_lookup.csv — {len(iso_lookup)} ISO codes")
-print(f"7. generated/region_xcode_lookup.csv — {len(xcode_lookup)} X-codes")
+print(f"   (X-codes are read directly from data/seeded/region_xcode_lookup.csv)")
 print()
 
 # ================================================================
-# PART 6: Language lookup
-# Mints cw:Language individuals only for codes that appear
-# in title_aka. language.csv language_name is 100% null.
+# PART 6 (deleted): Language lookup is now derived directly in
+# 09_language.yarrrml from data/title_aka.csv via grel:string_substring
+# branching for ISO 639-1 vs 639-3 Lexvo paths.
 # ================================================================
-
-language_codes = {
-    r["language"] for r in aka_rows
-    if not is_null(r["language"])
-}
-
-def lexvo_iri(code):
-    # ISO 639-1 codes are 2 characters; ISO 639-3 are 3 characters.
-    # Lexvo uses different paths for each standard.
-    if len(code) == 2:
-        return f"http://lexvo.org/id/iso639-1/{code}"
-    else:
-        return f"http://lexvo.org/id/iso639-3/{code}"
-
-language_lookup = [
-    {
-        "language_code": code,
-        "language_iri":  BASE + "language/" + urllib.parse.quote(code, safe=""),
-        "lexvo_iri":     lexvo_iri(code),
-    }
-    for code in sorted(language_codes)
-]
-
-write_csv(GEN / "language_lookup.csv",
-          ["language_code", "language_iri", "lexvo_iri"],
-          language_lookup)
-print(f"8. generated/language_lookup.csv --- {len(language_lookup)} codes")
-iso1 = sum(1 for r in language_lookup if len(r["language_code"]) == 2)
-iso3 = sum(1 for r in language_lookup if len(r["language_code"]) == 3)
-print(f"   ISO 639-1 codes: {iso1}, ISO 639-3 codes: {iso3}")
-print()
 
 # ================================================================
 # PART 7: Validate seeded lookups against source data

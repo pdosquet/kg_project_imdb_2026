@@ -1,57 +1,51 @@
 prefixes:
-  cw: http://localhost:3030/culturalworks/ontology#
-  film: http://localhost:3030/culturalworks/film#
+  cw: https://example.org/culturalworks/ontology#
+  film: https://example.org/culturalworks/film#
   xsd: http://www.w3.org/2001/XMLSchema#
   rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns#
+  grel: http://users.ugent.be/~bjdmeest/function/grel.ttl#
+  idlab-fn: https://w3id.org/imec/idlab/function#
 
 mappings:
 
-  # -------------------------------------------------------
-  # SeasonMapping: synthesises cw:WorkVolume individuals
-  # from distinct (parent_title_id, season_number) pairs.
-  # These entities do not exist in the source data — they
-  # are created by preprocess_complex.py.
-  #
-  # IRI: .../season/{parent_title_id}/S{season_number}
-  # The composite key is necessary because seasons have no
-  # natural identifier in the source data. The parent title
-  # ID scopes the season number within its series.
-  #
-  # cw:partOfSeries links the synthesised volume to its
-  # parent series individual (already in the graph from
-  # the title mapping).
-  # -------------------------------------------------------
-
+  # Synthesises cw:WorkVolume individuals directly from data/title_episode.csv,
+  # one per (parent_title_id, season_number). RDF set semantics + RMLMapper -d
+  # collapses duplicates from rows that share a season.
+  # Rows with season_number = \N are skipped at the subject-level condition.
   SeasonMapping:
-    sources: [['data/generated/seasons.csv~csv']]
-    s: $(season_iri)
+    sources: [['data/title_episode.csv~csv']]
+    s: https://example.org/culturalworks/season/$(parent_title_id)/S$(season_number)
+    condition:
+      function: idlab-fn:notEqual
+      parameters:
+        - [grel:valueParameter, $(season_number)]
+        - [grel:valueParameter2, "\\N"]
     po:
       - [a, cw:WorkVolume~iri]
       - p: film:seasonNumber
         o: $(season_number)
         datatype: xsd:integer
       - p: cw:partOfSeries
-        o: $(series_iri)~iri
+        o: https://example.org/culturalworks/title/$(parent_title_id)~iri
 
-  # -------------------------------------------------------
-  # EpisodeVolumeMapping: asserts cw:partOfVolume from each
-  # episode to its synthesised season individual, and adds
-  # film:episodeNumber.
-  #
-  # Source: episode_volume_links.csv (pre-computed).
-  # Only episodes with a non-null season_number have a row
-  # here — the 15 episodes with null season_number are
-  # absent and therefore get no partOfVolume assertion.
-  # This is correct: the maxCardinality 1 axiom on
-  # cw:partOfVolume allows episodes without a known volume.
-  # -------------------------------------------------------
-
+  # Episode -> Season link, only when season_number is known.
+  # episodeNumber emitted only when episode_number is also non-null.
   EpisodeVolumeMapping:
-    sources: [['data/generated/episode_volume_links.csv~csv']]
-    s: http://localhost:3030/culturalworks/title/$(title_id)
+    sources: [['data/title_episode.csv~csv']]
+    s: https://example.org/culturalworks/title/$(title_id)
+    condition:
+      function: idlab-fn:notEqual
+      parameters:
+        - [grel:valueParameter, $(season_number)]
+        - [grel:valueParameter2, "\\N"]
     po:
       - p: cw:partOfVolume
-        o: $(season_iri)~iri
+        o: https://example.org/culturalworks/season/$(parent_title_id)/S$(season_number)~iri
       - p: film:episodeNumber
         o: $(episode_number)
         datatype: xsd:integer
+        condition:
+          function: idlab-fn:notEqual
+          parameters:
+            - [grel:valueParameter, $(episode_number)]
+            - [grel:valueParameter2, "\\N"]

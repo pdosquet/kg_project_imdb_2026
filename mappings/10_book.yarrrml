@@ -1,6 +1,6 @@
 prefixes:
-  cw:    "http://localhost:3030/culturalworks/ontology#"
-  book:  "http://localhost:3030/culturalworks/book#"
+  cw:    "https://example.org/culturalworks/ontology#"
+  book:  "https://example.org/culturalworks/book#"
   owl:   "http://www.w3.org/2002/07/owl#"
   rdf:   "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
   rdfs:  "http://www.w3.org/2000/01/rdf-schema#"
@@ -11,7 +11,7 @@ mappings:
   OlWork:
     sources:
       - [data/generated/ol_work.csv~csv]
-    subjects: "http://localhost:3030/culturalworks/ol/work/$(ol_work_key)"
+    subjects: "https://example.org/culturalworks/ol/work/$(ol_work_key)"
     predicateobjects:
       - predicate: rdf:type
         object:
@@ -31,17 +31,17 @@ mappings:
   OlWorkLanguage:
     sources:
       - [data/generated/ol_work_language.csv~csv]
-    subjects: "http://localhost:3030/culturalworks/ol/work/$(ol_work_key)"
+    subjects: "https://example.org/culturalworks/ol/work/$(ol_work_key)"
     predicateobjects:
       - predicate: cw:workLanguage
         object:
-          value: "http://localhost:3030/culturalworks/language/$(language_code)"
+          value: "https://example.org/culturalworks/language/$(language_code)"
           type: iri
 
   OlLanguageType:
     sources:
       - [data/generated/ol_work_language.csv~csv]
-    subjects: "http://localhost:3030/culturalworks/language/$(language_code)"
+    subjects: "https://example.org/culturalworks/language/$(language_code)"
     predicateobjects:
       - predicate: rdf:type
         object:
@@ -51,7 +51,7 @@ mappings:
   OlLanguageSameAs:
     sources:
       - [data/generated/ol_work_language.csv~csv]
-    subjects: "http://localhost:3030/culturalworks/language/$(language_code)"
+    subjects: "https://example.org/culturalworks/language/$(language_code)"
     predicateobjects:
       - predicate: owl:sameAs
         object:
@@ -61,7 +61,7 @@ mappings:
   OlPerson:
     sources:
       - [data/generated/ol_person.csv~csv]
-    subjects: "http://localhost:3030/culturalworks/ol/author/$(ol_key_short)"
+    subjects: "https://example.org/culturalworks/ol/author/$(ol_key_short)"
     predicateobjects:
       - predicate: rdf:type
         object:
@@ -85,7 +85,7 @@ mappings:
   OlContribution:
     sources:
       - [data/generated/ol_contribution.csv~csv]
-    subjects: "http://localhost:3030/culturalworks/ol/contribution/$(ol_work_key)/$(ol_key_short)"
+    subjects: "https://example.org/culturalworks/ol/contribution/$(ol_work_key)/$(ol_key_short)"
     predicateobjects:
       - predicate: rdf:type
         object:
@@ -93,11 +93,11 @@ mappings:
           type: iri
       - predicate: cw:contributedBy
         object:
-          value: "http://localhost:3030/culturalworks/ol/author/$(ol_key_short)"
+          value: "https://example.org/culturalworks/ol/author/$(ol_key_short)"
           type: iri
       - predicate: cw:involves
         object:
-          value: "http://localhost:3030/culturalworks/ol/work/$(ol_work_key)"
+          value: "https://example.org/culturalworks/ol/work/$(ol_work_key)"
           type: iri
       - predicate: cw:hasRole
         object:
@@ -107,9 +107,9 @@ mappings:
   OlImdbSameAs:
     sources:
       - [data/generated/ol_sameas.csv~csv]
-    subjects: "http://localhost:3030/culturalworks/person/$(imdb_talent_id)"
+    subjects: "https://example.org/culturalworks/person/$(imdb_talent_id)"
     predicateobjects:
       - predicate: owl:sameAs
         object:
-          value: "http://localhost:3030/culturalworks/ol/author/$(ol_key_short)"
+          value: "https://example.org/culturalworks/ol/author/$(ol_key_short)"
           type: iri
