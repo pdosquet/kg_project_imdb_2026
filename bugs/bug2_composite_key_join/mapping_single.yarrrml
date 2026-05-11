@@ -1,0 +1,21 @@
+prefixes:
+  ex: "http://example.org/"
+
+mappings:
+  Right:
+    sources: [['bugs/bug2_composite_key_join/right.csv~csv']]
+    s: ex:right/$(right_id)
+    po:
+      - [ex:roleIri, $(role_iri)~iri]
+  Left:
+    sources: [['bugs/bug2_composite_key_join/left.csv~csv']]
+    s: ex:left/$(left_id)
+    po:
+      - p: ex:joined
+        o:
+          - mapping: Right
+            condition:
+              function: equal
+              parameters:
+                - [str1, $(key1)]
+                - [str2, $(key1)]

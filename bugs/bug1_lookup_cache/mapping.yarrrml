@@ -1,0 +1,27 @@
+prefixes:
+  ex: "http://example.org/"
+  idlab-fn: "http://example.com/idlab/function/"
+  grel: "http://users.ugent.be/~bjdmeest/function/grel.ttl#"
+
+mappings:
+  T:
+    sources:
+      - ['bugs/bug1_lookup_cache/source.csv~csv']
+    s: ex:row/$(key)
+    po:
+      - p: ex:lookupA
+        o:
+          function: idlab-fn:lookup
+          parameters:
+            - [idlab-fn:str, $(key)]
+            - [idlab-fn:inputFile, "bugs/bug1_lookup_cache/lookupA.csv"]
+            - [idlab-fn:fromColumn, "0"]
+            - [idlab-fn:toColumn, "1"]
+      - p: ex:lookupB
+        o:
+          function: idlab-fn:lookup
+          parameters:
+            - [idlab-fn:str, $(key)]
+            - [idlab-fn:inputFile, "bugs/bug1_lookup_cache/lookupB.csv"]
+            - [idlab-fn:fromColumn, "0"]
+            - [idlab-fn:toColumn, "1"]

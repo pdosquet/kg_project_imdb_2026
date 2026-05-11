@@ -4,7 +4,7 @@
       "strategy": "single_endpoint",
       "http_requests": 1,
       "bytes_received": 375,
-      "wall_clock_s": 0.018680304987356067,
+      "wall_clock_s": 0.020394840998051222,
       "rows_returned": 5,
       "result_set": [
         "Orson Welles",
@@ -28,12 +28,12 @@
       "strategy": "rdflib_naive",
       "http_requests": 2,
       "bytes_received": 832,
-      "wall_clock_s": 250.71082801697776,
+      "wall_clock_s": 0.24733945799744106,
       "rows_returned": 0,
       "result_set": [],
       "server_imdb_reqs": 1,
       "server_books_reqs": 0,
-      "error": "Invalid control character at: line 36518 column 45 (char 876567)",
+      "error": "HTTP Error 429: Aggressively rate-limiting to 1 req / min - this rule was created during active wdqs outage (d60aac9)",
       "request_log": [
         {
           "endpoint": "http://localhost:3031/imdb/sparql",
@@ -50,12 +50,12 @@
       "strategy": "rdflib_optimised",
       "http_requests": 3,
       "bytes_received": 1716,
-      "wall_clock_s": 35.48553153604735,
+      "wall_clock_s": 0.17474851500082877,
       "rows_returned": 0,
       "result_set": [],
       "server_imdb_reqs": 1,
       "server_books_reqs": 1,
-      "error": "HTTP Error 502: Bad Gateway",
+      "error": "HTTP Error 429: Aggressively rate-limiting to 1 req / min - this rule was created during active wdqs outage (d60aac9)",
       "request_log": [
         {
           "endpoint": "http://localhost:3032/books/sparql",
@@ -76,7 +76,7 @@
       "strategy": "jena_service",
       "http_requests": 1,
       "bytes_received": 375,
-      "wall_clock_s": 50.56916778598679,
+      "wall_clock_s": 431.1912433039979,
       "rows_returned": 5,
       "result_set": [
         "Orson Welles",
@@ -102,7 +102,7 @@
       "strategy": "single_local",
       "http_requests": 1,
       "bytes_received": 97613,
-      "wall_clock_s": 0.020542873011436313,
+      "wall_clock_s": 0.024709433000680292,
       "rows_returned": 586,
       "result_set": [
         "Abel Santacruz",
@@ -707,7 +707,7 @@
       "strategy": "direct_imdb",
       "http_requests": 1,
       "bytes_received": 97613,
-      "wall_clock_s": 0.025653953955043107,
+      "wall_clock_s": 0.09781637400010368,
       "rows_returned": 586,
       "result_set": [
         "Abel Santacruz",
@@ -1312,7 +1312,7 @@
       "strategy": "federated_blind",
       "http_requests": 1,
       "bytes_received": 97613,
-      "wall_clock_s": 1.9796669019851834,
+      "wall_clock_s": 3.0751507969980594,
       "rows_returned": 586,
       "result_set": [
         "Abel Santacruz",

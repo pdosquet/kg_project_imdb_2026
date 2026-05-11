@@ -1,0 +1,6 @@
+<http://example.org/left/L1> <http://example.org/joined> <http://example.org/right/R1> .
+<http://example.org/left/L2> <http://example.org/joined> <http://example.org/right/R2> .
+<http://example.org/left/L3> <http://example.org/joined> <http://example.org/right/R3> .
+<http://example.org/right/R1> <http://example.org/roleIri> <http://example.org/role/Lead> .
+<http://example.org/right/R2> <http://example.org/roleIri> <http://example.org/role/CoDirector> .
+<http://example.org/right/R3> <http://example.org/roleIri> <http://example.org/role/HeadWriter> .

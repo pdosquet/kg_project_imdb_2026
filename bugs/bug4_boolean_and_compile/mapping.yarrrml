@@ -1,0 +1,25 @@
+prefixes:
+  ex: "http://example.org/"
+  idlab-fn: "http://example.com/idlab/function/"
+  grel: "http://users.ugent.be/~bjdmeest/function/grel.ttl#"
+
+mappings:
+  T:
+    sources: [['bugs/bug4_boolean_and_compile/source.csv~csv']]
+    s: ex:row/$(row_id)
+    po:
+      - p: ex:flagged
+        o: "true"
+        condition:
+          function: grel:boolean_and
+          parameters:
+            - parameter: grel:param_rep_b
+              value:
+                - function: idlab-fn:notEqual
+                  parameters:
+                    - [grel:valueParameter, $(value)]
+                    - [grel:valueParameter2, "\\N"]
+                - function: idlab-fn:notEqual
+                  parameters:
+                    - [grel:valueParameter, $(value)]
+                    - [grel:valueParameter2, ""]

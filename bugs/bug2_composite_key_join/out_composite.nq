@@ -1,0 +1,3 @@
+<http://example.org/right/R1> <http://example.org/roleIri> <http://example.org/role/Lead> .
+<http://example.org/right/R2> <http://example.org/roleIri> <http://example.org/role/CoDirector> .
+<http://example.org/right/R3> <http://example.org/roleIri> <http://example.org/role/HeadWriter> .

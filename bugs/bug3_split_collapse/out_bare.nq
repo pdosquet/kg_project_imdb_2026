@@ -1,0 +1,5 @@
+<http://example.org/row/r1> <http://example.org/name> "Herself" .
+<http://example.org/row/r1> <http://example.org/name> "Host" .
+<http://example.org/row/r2> <http://example.org/name> "Alice" .
+<http://example.org/row/r2> <http://example.org/name> "Bob" .
+<http://example.org/row/r2> <http://example.org/name> "Carol" .

@@ -1,0 +1,20 @@
+prefixes:
+  ex: "http://example.org/"
+  grel: "http://users.ugent.be/~bjdmeest/function/grel.ttl#"
+
+mappings:
+  T:
+    sources: [['bugs/bug3_split_collapse/source.csv~csv']]
+    s: ex:row/$(row_id)
+    po:
+      - p: ex:name
+        o:
+          function: grel:escape
+          parameters:
+            - parameter: grel:valueParameter
+              value:
+                function: grel:string_split
+                parameters:
+                  - [grel:valueParameter, $(names)]
+                  - [grel:p_string_sep, ","]
+            - [grel:modeParameter, "url"]

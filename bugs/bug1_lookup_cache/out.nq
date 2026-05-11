@@ -1,0 +1,6 @@
+<http://example.org/row/k1> <http://example.org/lookupA> "A1" .
+<http://example.org/row/k1> <http://example.org/lookupB> "A1" .
+<http://example.org/row/k2> <http://example.org/lookupA> "A2" .
+<http://example.org/row/k2> <http://example.org/lookupB> "A2" .
+<http://example.org/row/k3> <http://example.org/lookupA> "A3" .
+<http://example.org/row/k3> <http://example.org/lookupB> "A3" .
