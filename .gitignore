@@ -6,3 +6,4 @@ data/generated/*.csv
 jena
 apache*
 .venv
+.claude
